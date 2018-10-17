@@ -1,16 +1,11 @@
-# set options with "--config key1=value1 key2=value2"
+# set options with "--config "
 
 import os
 
-if "input_folder" in config:
-    input_folder = config["input_folder"]
-else:
-    input_folder = "./"
+configfile = "config.yaml"
 
-if "output_folder" in config:
-    output_folder = config["output_folder"]
-else:
-    output_folder = "./"
+input_folder = config["input_folder"]
+output_folder = config["output_folder"]
 
 
 SAMPLES, = glob_wildcards(os.path.join(input_folder, "{samples}_R1_001.fastq.gz"))
@@ -24,7 +19,7 @@ rule kneaddata_filter:
     input:
         fwd = expand(os.path.join(input_folder, "{samples}_R1_001.fastq.gz"), samples = SAMPLES),
         rev = expand(os.path.join(input_folder, "{samples}_R2_001.fastq.gz"), samples = SAMPLES),
-        db = "testing/data/Homo_sapiens_Bowtie2_v0.1"
+        db = config["databases"]["human_sequences"]
     output:
         folder = os.path.join(out_folder, "kneaddata/kneaddata_output/",
         fwd = expand(os.path.join(output_folder, "kneaddata/kneaddata_output/{samples}_R1_001_kneaddata_paired_1.fastq"), samples = SAMPLES),
