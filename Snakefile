@@ -1,19 +1,34 @@
-SAMPLES, = glob_wildcards("testing/data/{samples}_R1_001.fastq.gz")
+# set options with "--config key1=value1 key2=value2"
+
+import os
+
+if "input_folder" in config:
+    input_folder = config["input_folder"]
+else:
+    input_folder = "./"
+
+if "output_folder" in config:
+    output_folder = config["output_folder"]
+else:
+    output_folder = "./"
+
+
+SAMPLES, = glob_wildcards(os.path.join(input_folder, "{samples}_R1_001.fastq.gz"))
 
 rule all:
     input:
-        "testing/report.html"
+        os.path.join(input_folder, "report.html")
 
 
 rule kneaddata_filter:
     input:
-        fwd = expand("testing/data/{samples}_R1_001.fastq.gz", samples = SAMPLES),
-        rev = expand("testing/data/{samples}_R2_001.fastq.gz", samples = SAMPLES),
+        fwd = expand(os.path.join(input_folder, "data/{samples}_R1_001.fastq.gz", samples = SAMPLES),
+        rev = expand(os.path.join(input_folder, "data/{samples}_R2_001.fastq.gz", samples = SAMPLES),
         db = "testing/data/Homo_sapiens_Bowtie2_v0.1"
     output:
-        folder = "testing/kneaddata/kneaddata_output/",
-        fwd = expand("testing/kneaddata/kneaddata_output/{samples}_R1_001_kneaddata_paired_1.fastq", samples = SAMPLES),
-        rev = expand("testing/kneaddata/kneaddata_output/{samples}_R1_001_kneaddata_paired_2.fastq", samples = SAMPLES)
+        folder = os.path.join(out_folder, "kneaddata/kneaddata_output/",
+        fwd = expand(os.path.join(output_folder, "kneaddata/kneaddata_output/{samples}_R1_001_kneaddata_paired_1.fastq", samples = SAMPLES),
+        rev = expand(os.path.join(output_folder, "kneaddata/kneaddata_output/{samples}_R1_001_kneaddata_paired_2.fastq", samples = SAMPLES)
     run:
         for f,r in zip(input.fwd,input.rev):
             shell("kneaddata --input {f} --input {r} --reference-db {input.db} --output {output.folder}")
