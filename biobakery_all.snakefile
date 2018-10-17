@@ -22,13 +22,13 @@ rule all:
 
 rule kneaddata_filter:
     input:
-        fwd = expand(os.path.join(input_folder, "data/{samples}_R1_001.fastq.gz", samples = SAMPLES),
-        rev = expand(os.path.join(input_folder, "data/{samples}_R2_001.fastq.gz", samples = SAMPLES),
+        fwd = expand(os.path.join(input_folder, "{samples}_R1_001.fastq.gz"), samples = SAMPLES),
+        rev = expand(os.path.join(input_folder, "{samples}_R2_001.fastq.gz"), samples = SAMPLES),
         db = "testing/data/Homo_sapiens_Bowtie2_v0.1"
     output:
         folder = os.path.join(out_folder, "kneaddata/kneaddata_output/",
-        fwd = expand(os.path.join(output_folder, "kneaddata/kneaddata_output/{samples}_R1_001_kneaddata_paired_1.fastq", samples = SAMPLES),
-        rev = expand(os.path.join(output_folder, "kneaddata/kneaddata_output/{samples}_R1_001_kneaddata_paired_2.fastq", samples = SAMPLES)
+        fwd = expand(os.path.join(output_folder, "kneaddata/kneaddata_output/{samples}_R1_001_kneaddata_paired_1.fastq"), samples = SAMPLES),
+        rev = expand(os.path.join(output_folder, "kneaddata/kneaddata_output/{samples}_R1_001_kneaddata_paired_2.fastq"), samples = SAMPLES)
     run:
         for f,r in zip(input.fwd,input.rev):
             shell("kneaddata --input {f} --input {r} --reference-db {input.db} --output {output.folder}")
@@ -42,9 +42,9 @@ rule kneaddata_filter:
 
 rule kneaddata_counts:
     input:
-        "testing/kneaddata/kneaddata_output/"
+        os.path.join(output_folder, "kneaddata/kneaddata_output/")
     output:
-        "testing/kneaddata/kneaddata_read_counts.txt"
+        os.path.join(output_folder, "kneaddata/kneaddata_read_counts.txt")
     shell:
         "kneaddata_read_count_table --input {input} --output {output}"
 
@@ -66,8 +66,8 @@ rule kneaddata_counts:
 
 rule kneaddata_report:
     input:
-        filter = "testing/kneaddata/kneaddata_output/",
-        counts = "testing/kneaddata/kneaddata_read_counts.txt"
+        filter = os.path.join(output_folder, "kneaddata/kneaddata_output/"),
+        counts = os.path.join(output_folder, "kneaddata/kneaddata_read_counts.txt")
     output:
         "testing/kneaddata/kneaddata_report.html"
     run:
@@ -79,12 +79,12 @@ rule kneaddata_report:
 
 rule metaphlan2_reads:
     input:
-        fwd = expand("testing/kneaddata/kneaddata_output/{samples}_R1_001_kneaddata_paired_1.fastq", samples = SAMPLES),
-        rev = expand("testing/kneaddata/kneaddata_output/{samples}_R1_001_kneaddata_paired_2.fastq", samples = SAMPLES)
+        fwd = expand(os.path.join(output_folder, "kneaddata/kneaddata_output/{samples}_R1_001_kneaddata_paired_1.fastq"), samples = SAMPLES),
+        rev = expand(os.path.join(output_folder, "kneaddata/kneaddata_output/{samples}_R1_001_kneaddata_paired_2.fastq"), samples = SAMPLES)
     output:
-        profiles = expand("testing/metaphlan2/main/{samples}_profile.txt", samples = SAMPLES),
-        bowties = expand("testing/metaphlan2/main/{samples}_bowtie2.txt", samples = SAMPLES),
-        sams = expand("testing/metaphlan2/main/{samples}.sam.bz2", samples = SAMPLES)
+        profiles = expand(os.path.join(output_folder, "metaphlan2/main/{samples}_profile.txt"), samples = SAMPLES),
+        bowties = expand(os.path.join(output_folder, "metaphlan2/main/{samples}_bowtie2.txt"), samples = SAMPLES),
+        sams = expand(os.path.join(output_folder, "metaphlan2/main/{samples}.sam.bz2"), samples = SAMPLES)
     run:
         for f,r,p,b,s in zip(input.fwd,input.rev,output.profiles,output.bowties,output.sams):
             shell("metaphlan2.py {f},{r} {p} --bowtie2out {b} --samout {s} --input_type fastq --nproc 4")
@@ -92,27 +92,27 @@ rule metaphlan2_reads:
 
 rule metaphlan2_merge:
     input:
-        expand("testing/metaphlan2/main/{samples}_profile.txt", samples = SAMPLES)
+        expand(os.path.join(output_folder, "metaphlan2/main/{samples}_profile.txt"), samples = SAMPLES)
     output:
-        "testing/metaphlan2/merged/merged_abundance_table.txt"
+        os.path.join(output_folder, "metaphlan2/merged/merged_abundance_table.txt")
     shell:
         "merge_metaphlan_tables.py {input} > {output}"
 
 
 rule hclust2_species:
     input:
-        "testing/metaphlan2/merged/merged_abundance_table.txt"
+        os.path.join(output_folder, "metaphlan2/merged/merged_abundance_table.txt")
     output:
-        "testing/metaphlan2/merged/merged_abundance_table_species.txt"
+        os.path.join(output_folder, "metaphlan2/merged/merged_abundance_table_species.txt")
     shell:
         "grep -E \"(s__)|(^ID)\" {input} | grep -v \"t__\" | sed 's/^.*s__//g' > {output}"
 
 
 rule hclust2_heatmap:
     input:
-        "testing/metaphlan2/merged/merged_abundance_table_species.txt"
+        os.path.join(output_folder, "metaphlan2/merged/merged_abundance_table_species.txt")
     output:
-        "testing/metaphlan2/merged/abundance_heatmap_species.png"
+        os.path.join(output_folder, "metaphlan2/merged/abundance_heatmap_species.png")
     shell:
         "hclust2.py -i {input} -o {output} --ftop 25 \
         --f_dist_f braycurtis --s_dist_f braycurtis --cell_aspect_ratio 0.5 -l --flabel_size 6 \
@@ -121,10 +121,10 @@ rule hclust2_heatmap:
 
 rule graphlan_input:
     input:
-        "testing/metaphlan2/merged/merged_abundance_table.txt"
+        os.path.join(output_folder, "metaphlan2/merged/merged_abundance_table.txt")
     output:
-        tree = "testing/metaphlan2/merged/merged_abundance.tree.txt",
-        annot = "testing/metaphlan2/merged/merged_abundance.annot.txt"
+        tree = os.path.join(output_folder, "metaphlan2/merged/merged_abundance.tree.txt"),
+        annot = os.path.join(output_folder, "metaphlan2/merged/merged_abundance.annot.txt")
     shell:
         "export2graphlan.py --skip_rows 1,2 \
         -i {input} --tree {output.tree} --annotation {output.annot} \
@@ -134,10 +134,10 @@ rule graphlan_input:
 
 rule graphlan_cladogram_1:
     input:
-        tree = "testing/metaphlan2/merged/merged_abundance.tree.txt",
-        annot = "testing/metaphlan2/merged/merged_abundance.annot.txt"
+        tree = os.path.join(output_folder, "metaphlan2/merged/merged_abundance.tree.txt"),
+        annot = os.path.join(output_folder, "metaphlan2/merged/merged_abundance.annot.txt")
     output:
-        "testing/metaphlan2/merged/merged_abundance.xml"
+        os.path.join(output_folder, "metaphlan2/merged/merged_abundance.xml")
     shell:
         "graphlan_annotate.py --annot {input.annot} \
         {input.tree} {output}"
@@ -145,9 +145,9 @@ rule graphlan_cladogram_1:
 
 rule graphlan_cladogram_2:
     input:
-        "testing/metaphlan2/merged/merged_abundance.xml"
+        os.path.join(output_folder, "metaphlan2/merged/merged_abundance.xml")
     output:
-        "testing/metaphlan2/merged/merged_abundance.png"
+        os.path.join(output_folder, "metaphlan2/merged/merged_abundance.png")
     shell:
         "graphlan.py --dpi 300 {input} \
         {output} --external_legends"
@@ -155,8 +155,8 @@ rule graphlan_cladogram_2:
 
 rule metaphlan2_report:
     input:
-        hclust = "testing/metaphlan2/merged/abundance_heatmap_species.png",
-        graphlan = "testing/metaphlan2/merged/merged_abundance.png"
+        hclust = os.path.join(output_folder, "metaphlan2/merged/abundance_heatmap_species.png"),
+        graphlan = os.path.join(output_folder, "metaphlan2/merged/merged_abundance.png")
     output:
         "testing/metaphlan2/metaphlan2_report.html"
     run:
@@ -190,10 +190,10 @@ rule strainphlan_markers:
 
 rule humann2_prep:
     input:
-        fwd = expand("testing/kneaddata/kneaddata_output/{samples}_R1_001_kneaddata_paired_1.fastq", samples = SAMPLES),
-        rev = expand("testing/kneaddata/kneaddata_output/{samples}_R1_001_kneaddata_paired_2.fastq", samples = SAMPLES)
+        fwd = expand(os.path.join(output_folder, "kneaddata/kneaddata_output/{samples}_R1_001_kneaddata_paired_1.fastq"), samples = SAMPLES),
+        rev = expand(os.path.join(output_folder, "kneaddata/kneaddata_output/{samples}_R1_001_kneaddata_paired_2.fastq"), samples = SAMPLES)
     output:
-        expand("testing/kneaddata/kneaddata_output/{samples}.fastq", samples = SAMPLES)
+        expand(os.path.join(output_folder, "kneaddata/kneaddata_output/{samples}.fastq"), samples = SAMPLES)
     run:
         for f,r,o in zip(input.fwd,input.rev,output):
             shell("cat {f} {r} > {o}")
@@ -201,7 +201,7 @@ rule humann2_prep:
 
 rule humann2_output:
     input:
-        expand("testing/kneaddata/kneaddata_output/{samples}.fastq", samples = SAMPLES)
+        expand(os.path.join(output_folder, "kneaddata/kneaddata_output/{samples}.fastq"), samples = SAMPLES)
     output:
         folder = "testing/humann2/main/",
         samples = expand("testing/humann2/main/{samples}_genefamilies.tsv", samples = SAMPLES),
@@ -216,18 +216,18 @@ rule humann2_output:
 
 rule humann2_rename:
     input:
-        expand("testing/humann2/main/{samples}_genefamilies.tsv", samples = SAMPLES)
+        expand(os.path.join(output_folder, "humann2/main/{samples}_genefamilies.tsv"), samples = SAMPLES)
     output:
-        expand("testing/humann2/main/{samples}_genefamilies-names.tsv", samples = SAMPLES)
+        expand(os.path.join(output_folder, "humann2/main/{samples}_genefamilies-names.tsv"), samples = SAMPLES)
     run:
         for i,o in zip(input,output):
             shell("humann2_rename_table --input {i} --output {o} --names uniref90")
 
 rule humann2_regroup_1:
     input:
-        samples = expand("testing/humann2/main/{samples}_genefamilies.tsv", samples = SAMPLES)
+        samples = expand(os.path.join(output_folder, "humann2/main/{samples}_genefamilies.tsv"), samples = SAMPLES)
     output:
-        expand("testing/humann2/regroup/{samples}_ecs.tsv", samples = SAMPLES)
+        expand(os.path.join(output_folder, "humann2/regroup/{samples}_ecs.tsv"), samples = SAMPLES)
     run:
         for i,o in zip(input.samples,output):
             shell("humann2_regroup_table --input {i} --output {o} --groups uniref90_rxn")
@@ -236,13 +236,13 @@ rule humann2_regroup_1:
 rule humann2_relab_1:
     input:
         # folder = "testing/humann2/main/",
-        gf = expand("testing/humann2/main/{samples}_genefamilies.tsv", samples = SAMPLES),
-        path = expand("testing/humann2/main/{samples}_pathabundance.tsv", samples = SAMPLES),
-        ec = expand("testing/humann2/regroup/{samples}_ecs.tsv", samples = SAMPLES)
+        gf = expand(os.path.join(output_folder, "humann2/main/{samples}_genefamilies.tsv"), samples = SAMPLES),
+        path = expand(os.path.join(output_folder, "humann2/main/{samples}_pathabundance.tsv"), samples = SAMPLES),
+        ec = expand(os.path.join(output_folder, "humann2/regroup/{samples}_ecs.tsv"), samples = SAMPLES)
     output:
-        gf = expand("testing/humann2/relab/{samples}_genefamilies_relab.tsv", samples = SAMPLES),
-        path = expand("testing/humann2/relab/{samples}_pathabundance_relab.tsv", samples = SAMPLES),
-        ec = expand("testing/humann2/relab/{samples}_ecs_relab.tsv", samples = SAMPLES)
+        gf = expand(os.path.join(output_folder, "humann2/relab/{samples}_genefamilies_relab.tsv"), samples = SAMPLES),
+        path = expand(os.path.join(output_folder, "humann2/relab/{samples}_pathabundance_relab.tsv"), samples = SAMPLES),
+        ec = expand(os.path.join(output_folder, "humann2/relab/{samples}_ecs_relab.tsv"), samples = SAMPLES)
     run:
         for g,p,e,x,y,z in zip(input.gf,input.path,input.ec,output.gf,output.path,output.ec):
             shell("humann2_renorm_table -i {g} -o {x} -u relab")
@@ -252,13 +252,13 @@ rule humann2_relab_1:
 
 rule humann2_join:
     input:
-        one = "testing/humann2/main",
-        two = "testing/humann2/regroup",
-        regroup = expand("testing/humann2/regroup/{samples}_ecs.tsv", samples = SAMPLES)
+        one = os.path.join(output_folder, "humann2/main"),
+        two = os.path.join(output_folder, "humann2/regroup"),
+        regroup = expand(os.path.join(output_folder, "humann2/regroup/{samples}_ecs.tsv"), samples = SAMPLES)
     output:
-        gf = "testing/humann2/merged/genefamilies.tsv",
-        path = "testing/humann2/merged/pathabundance.tsv",
-        ec = "testing/humann2/merged/ecs.tsv"
+        gf = os.path.join(output_folder, "humann2/merged/genefamilies.tsv"),
+        path = os.path.join(output_folder, "humann2/merged/pathabundance.tsv"),
+        ec = os.path.join(output_folder, "humann2/merged/ecs.tsv")
     run:
         shell("humann2_join_tables -i {input.one} -o {output.gf} --file_name genefamilies")
         shell("humann2_join_tables -i {input.one} -o {output.path} --file_name pathabundance")
@@ -267,13 +267,13 @@ rule humann2_join:
 
 rule humann2_relab_2:
     input:
-        gf = expand("testing/humann2/relab/{samples}_genefamilies_relab.tsv", samples = SAMPLES),
-        path = expand("testing/humann2/relab/{samples}_pathabundance_relab.tsv", samples = SAMPLES),
-        ec = expand("testing/humann2/relab/{samples}_ecs_relab.tsv", samples = SAMPLES)
+        gf = expand(os.path.join(output_folder, "humann2/relab/{samples}_genefamilies_relab.tsv"), samples = SAMPLES),
+        path = expand(os.path.join(output_folder, "humann2/relab/{samples}_pathabundance_relab.tsv"), samples = SAMPLES),
+        ec = expand(os.path.join(output_folder, "humann2/relab/{samples}_ecs_relab.tsv"), samples = SAMPLES)
     output:
-        gf = "testing/humann2/merged/genefamilies_relab.tsv",
-        path = "testing/humann2/merged/pathabundance_relab.tsv",
-        ec = "testing/humann2/merged/ecs_relab.tsv"
+        gf = os.path.join(output_folder, "humann2/merged/genefamilies_relab.tsv"),
+        path = os.path.join(output_folder, "humann2/merged/pathabundance_relab.tsv"),
+        ec = os.path.join(output_folder, "humann2/merged/ecs_relab.tsv")
     run:
         shell("humann2_join_tables -i testing/humann2/relab -o {output.gf} --file_name genefamilies_relab")
         shell("humann2_join_tables -i testing/humann2/relab -o {output.path} --file_name pathabundance_relab")
@@ -282,11 +282,11 @@ rule humann2_relab_2:
 
 rule humann2_report:
     input:
-        gf = "testing/humann2/merged/genefamilies_relab.tsv",
-        path = "testing/humann2/merged/pathabundance_relab.tsv",
-        ec = "testing/humann2/merged/ecs_relab.tsv"
+        gf = os.path.join(output_folder, "humann2/merged/genefamilies_relab.tsv"),
+        path = os.path.join(output_folder, "humann2/merged/pathabundance_relab.tsv"),
+        ec = os.path.join(output_folder, "humann2/merged/ecs_relab.tsv")
     output:
-        "testing/humann2/humann2_report.html"
+        os.path.join(output_folder, "humann2/humann2_report.html")
     run:
         from snakemake.utils import report
         report("""
@@ -295,11 +295,11 @@ rule humann2_report:
 
 rule report:
     input:
-        kneaddata = "testing/kneaddata/kneaddata_report.html",
-        metaphlan2 = "testing/metaphlan2/metaphlan2_report.html",
-        humann2 = "testing/humann2/humann2_report.html"
+        kneaddata = os.path.join(output_folder, "kneaddata/kneaddata_report.html"),
+        metaphlan2 = os.path.join(output_folder, "metaphlan2/metaphlan2_report.html"),
+        humann2 = os.path.join(output_folder, "humann2/humann2_report.html")
     output:
-        "testing/report.html"
+        os.path.join(output_folder, "report.html")
     run:
         from snakemake.utils import report
         report("""
