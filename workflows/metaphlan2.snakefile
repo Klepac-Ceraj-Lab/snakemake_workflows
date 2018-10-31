@@ -22,10 +22,9 @@ rule metaphlan2_merge:
 
 rule metaphlan2_report:
     input:
-        hclust = os.path.join(output_folder, "metaphlan2/merged/abundance_heatmap_species.png"),
-        graphlan = os.path.join(output_folder, "metaphlan2/merged/merged_abundance.png")
+        os.path.join(output_folder, "metaphlan2/merged/merged_abundance_table.txt")
     output:
-        "testing/metaphlan2/metaphlan2_report.html"
+        os.path.join(output_folder, "metaphlan2/metaphlan2_report.html")
     run:
         from snakemake.utils import report
         report("""
