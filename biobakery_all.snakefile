@@ -10,9 +10,9 @@ output_folder = config["output_folder"]
 
 SAMPLES, = glob_wildcards(os.path.join(input_folder, "{samples}_R1_001.fastq.gz"))
 
-include: "worflows/kneaddata.snakefile"
-include: "worflows/metaphlan2.snakefile"
-include: "worflows/humann2.snakefile"
+include: "workflows/kneaddata.snakefile"
+include: "workflows/metaphlan2.snakefile"
+include: "workflows/humann2.snakefile"
 
 
 rule all:
