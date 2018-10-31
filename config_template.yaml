@@ -5,7 +5,7 @@
 #-------------------
 # workflow variables
 #-------------------
-
+---
 input_folder: ./
 outout_folder: ./
 run: all
