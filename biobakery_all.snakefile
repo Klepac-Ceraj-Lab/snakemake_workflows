@@ -2,7 +2,7 @@
 
 import os
 
-configfile = "config.yaml"
+configfile: "config.yaml"
 
 input_folder = config["input_folder"]
 output_folder = config["output_folder"]
