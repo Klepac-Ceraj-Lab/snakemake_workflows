@@ -17,7 +17,7 @@ include: "workflows/humann2.snakefile"
 
 rule all:
     input:
-        os.path.join(input_folder, "report.html")
+        os.path.join(output_folder, "report.html")
 
 
 rule report:
