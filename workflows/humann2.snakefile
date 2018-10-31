@@ -13,9 +13,9 @@ rule humann2_output:
     input:
         expand(os.path.join(output_folder, "kneaddata/kneaddata_output/{samples}.fastq"), samples = SAMPLES)
     output:
-        folder = "testing/humann2/main/",
-        samples = expand("testing/humann2/main/{samples}_genefamilies.tsv", samples = SAMPLES),
-        path = expand("testing/humann2/main/{samples}_pathabundance.tsv", samples = SAMPLES)
+        folder = os.path.join(output_folder, "humann2/main/"),
+        samples = expand(os.path.join(output_folder, "humann2/main/{samples}_genefamilies.tsv"), samples = SAMPLES),
+        path = expand(os.path.join(output_folder, "humann2/main/{samples}_pathabundance.tsv"), samples = SAMPLES)
     run:
         for i in zip(input):
             shell("humann2 --input {i} --output {output.folder} --metaphlan ~/Documents/metaphlan2/metaphlan2 \
@@ -35,11 +35,11 @@ rule humann2_rename:
 
 rule humann2_regroup_1:
     input:
-        samples = expand(os.path.join(output_folder, "humann2/main/{samples}_genefamilies.tsv"), samples = SAMPLES)
+        expand(os.path.join(output_folder, "humann2/main/{samples}_genefamilies.tsv"), samples = SAMPLES)
     output:
         expand(os.path.join(output_folder, "humann2/regroup/{samples}_ecs.tsv"), samples = SAMPLES)
     run:
-        for i,o in zip(input.samples,output):
+        for i,o in zip(input,output):
             shell("humann2_regroup_table --input {i} --output {o} --groups uniref90_rxn")
 
 
