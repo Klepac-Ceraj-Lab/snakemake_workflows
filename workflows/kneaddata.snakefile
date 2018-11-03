@@ -20,7 +20,7 @@ rule kneaddata_counts:
     output:
         os.path.join(output_folder, "kneaddata/kneaddata_read_counts.txt")
     shell:
-        "kneaddata_read_count_table --input {} --output {output}".format(kneadfolder)
+        "kneaddata_read_count_table --input {} --output {{output}}".format(kneadfolder)
 
 
 rule kneaddata_report:
