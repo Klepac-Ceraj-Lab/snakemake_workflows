@@ -13,7 +13,6 @@ rule humann2_output:
     input:
         expand(os.path.join(output_folder, "kneaddata/kneaddata_output/{samples}.fastq"), samples = SAMPLES)
     output:
-        folder = os.path.join(output_folder, "humann2/main/"),
         samples = expand(os.path.join(output_folder, "humann2/main/{samples}_genefamilies.tsv"), samples = SAMPLES),
         path = expand(os.path.join(output_folder, "humann2/main/{samples}_pathabundance.tsv"), samples = SAMPLES)
     run:
