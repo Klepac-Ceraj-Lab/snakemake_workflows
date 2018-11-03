@@ -5,10 +5,10 @@
 #-------------------
 # workflow variables
 #-------------------
-
-input_folder: "./"
-outout_folder: "./"
-run: "all"
+---
+input_folder: ""
+output_folder: ""
+run: all
 
 #----------------------
 # Environment variables
@@ -16,15 +16,13 @@ run: "all"
 
 # by default, assume these are in $PATH
 executables:
-  kneaddata: "kneaddata"
-  metaphlan2: "metaphlan2"
-  humann2: "humann2"
-  diamond: "diamond"
+    kneaddata: kneaddata
+    metaphlan2: metaphlan2
+    humann2: humann2
+    diamond: diamond
 
 # these are the paths on engaging
 databases:
-  human_sequences: "/nobackup1/vklepacc/databases/Homo_sapiens_bowtie"
-  uniref: "/nobackup1/vklepacc/databases/uniref/"
-  chocophlan: ""/nobackup1/vklepacc/databases/chocophlan"
-
-
+    human_sequences: /nobackup1/vklepacc/databases/Homo_sapiens_bowtie
+    uniref: /nobackup1/vklepacc/databases/uniref/
+    chocophlan: /nobackup1/vklepacc/databases/chocophlan
