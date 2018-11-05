@@ -42,11 +42,10 @@ rule humann2_relab_1:
         path = expand(os.path.join(output_folder, "humann2/main/{samples}_pathabundance.tsv"), samples = SAMPLES),
         ec = expand(os.path.join(output_folder, "humann2/regroup/{samples}_ecs.tsv"), samples = SAMPLES)
     output:
-        gf = expand(os.path.join(output_folder, "humann2/relab/{samples}_genefamilies_relab.tsv"), samples = SAMPLES),
         path = expand(os.path.join(output_folder, "humann2/relab/{samples}_pathabundance_relab.tsv"), samples = SAMPLES),
         ec = expand(os.path.join(output_folder, "humann2/relab/{samples}_ecs_relab.tsv"), samples = SAMPLES)
     run:
-        for g,p,e,x,y,z in zip(input.gf,input.path,input.ec,output.gf,output.path,output.ec):
+        for p,e,x,y,z in zip(input.path,input.ec,output.gf,output.path,output.ec):
             shell("humann2_renorm_table -i {p} -o {y} -u relab")
             shell("humann2_renorm_table -i {e} -o {z} -u relab")
 
