@@ -1,7 +1,7 @@
 # Snakemake Workflows
 
-by
-  Lauren Tso
+by  
+  Lauren Tso  
   Kevin Bonham, PhD
 
 ## Usage
