@@ -6,8 +6,8 @@ rule kneaddata_filter:
         rev = expand(os.path.join(input_folder, "{samples}_R2_001.fastq.gz"), samples = SAMPLES),
         db = config["databases"]["human_sequences"]
     output:
-        fwd = expand(os.path.abspath(os.path.join(kneadfolder, "{samples}_R1_001_kneaddata_paired_1.fastq")), samples = SAMPLES),
-        rev = expand(os.path.abspath(os.path.join(kneadfolder, "{samples}_R1_001_kneaddata_paired_2.fastq")), samples = SAMPLES)
+        fwd = expand(os.path.abspath(os.path.join(kneadfolder, input_folder, "{samples}_R1_001_kneaddata_paired_1.fastq")), samples = SAMPLES),
+        rev = expand(os.path.abspath(os.path.join(kneadfolder, input_folder, "{samples}_R1_001_kneaddata_paired_2.fastq")), samples = SAMPLES)
     run:
         for f,r in zip(input.fwd,input.rev):
             shell("kneaddata --input {{f}} --input {{r}} --reference-db {{input.db}} --output {}".format(kneadfolder))
