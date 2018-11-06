@@ -2,8 +2,8 @@ kneadfolder = os.path.join(output_folder, "kneaddata/kneaddata_output/")
 
 rule kneaddata_filter:
     input:
-        fwd = expand(os.path.join(input_folder, "{samples}_R1_001.fastq.gz"), samples = SAMPLES),
-        rev = expand(os.path.join(input_folder, "{samples}_R2_001.fastq.gz"), samples = SAMPLES),
+        fwd = expand(os.path.join(input_folder, "{sample}_R1_001.fastq.gz")),
+        rev = expand(os.path.join(input_folder, "{sample}_R2_001.fastq.gz")),
         db = config["databases"]["human_sequences"]
     output:
         samples = expand("testing/data/{samples}_R1_001.fastq.gz", samples = SAMPLES),
