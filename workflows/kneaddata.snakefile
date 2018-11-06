@@ -6,7 +6,7 @@ rule kneaddata_filter:
         rev = expand(os.path.join(input_folder, "{samples}_R2_001.fastq.gz"), samples = SAMPLES),
         db = config["databases"]["human_sequences"]
     output:
-        samples = expand(testing/data/{samples}_R1_001.fastq.gz, samples = SAMPLES)
+        samples = expand(testing/data/{samples}_R1_001.fastq.gz, samples = SAMPLES),
         fwd = expand(os.path.abspath(os.path.join(kneadfolder, "{samples}_R1_001_kneaddata_paired_1.fastq")), samples = SAMPLES),
         rev = expand(os.path.abspath(os.path.join(kneadfolder, "{samples}_R1_001_kneaddata_paired_2.fastq")), samples = SAMPLES)
     shell:
