@@ -17,9 +17,9 @@ rule humann2_output:
         path = expand(os.path.join(output_folder, "humann2/main/{samples}_pathabundance.tsv"), samples = SAMPLES)
     run:
         for i in zip(input):
-            shell("humann2 --input {i} --output {output.folder} --metaphlan ~/software/biobakery/metaphlan2/metaphlan2 \
+            shell("humann2 --input {{i}} --output {} --metaphlan ~/software/biobakery/metaphlan2/metaphlan2 \
             --nucleotide-database ~/software/lauren-scratch/testing/data/humann2_database_downloads/chocophlan \
-            --protein-database ~/software/lauren-scratch/testing/data/humann2_database_downloads/uniref")
+            --protein-database ~/software/lauren-scratch/testing/data/humann2_database_downloads/uniref.format(output_folder))
 
 
 rule humann2_gf:
@@ -38,7 +38,6 @@ rule humann2_gf:
 
 rule humann2_relab_1:
     input:
-        # folder = "testing/humann2/main/",
         path = expand(os.path.join(output_folder, "humann2/main/{samples}_pathabundance.tsv"), samples = SAMPLES),
         ec = expand(os.path.join(output_folder, "humann2/regroup/{samples}_ecs.tsv"), samples = SAMPLES)
     output:
