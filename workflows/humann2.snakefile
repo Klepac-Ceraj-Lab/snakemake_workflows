@@ -11,7 +11,7 @@ rule humann2_prep:
 
 rule humann2_output:
     input:
-        sams = expand(os.path.join(output_folder, "metaphlan2/main/{samples}.sam.bz2"), samples = SAMPLES)
+        expand(os.path.join(output_folder, "kneaddata/kneaddata_output/{samples}.fastq"), samples = SAMPLES)
     output:
         samples = expand(os.path.join(output_folder, "humann2/main/{samples}_genefamilies.tsv"), samples = SAMPLES),
         path = expand(os.path.join(output_folder, "humann2/main/{samples}_pathabundance.tsv"), samples = SAMPLES)
