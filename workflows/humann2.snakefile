@@ -11,13 +11,13 @@ rule humann2_prep:
 
 rule humann2_output:
     input:
-        expand(os.path.join(output_folder, "kneaddata/kneaddata_output/{samples}.fastq"), samples = SAMPLES)
+        sams = expand(os.path.join(output_folder, "metaphlan2/main/{samples}.sam.bz2"), samples = SAMPLES)
     output:
         samples = expand(os.path.join(output_folder, "humann2/main/{samples}_genefamilies.tsv"), samples = SAMPLES),
         path = expand(os.path.join(output_folder, "humann2/main/{samples}_pathabundance.tsv"), samples = SAMPLES)
     run:
         for i in zip(input):
-            shell("humann2 --input {{i}} --output {} --metaphlan ~/software/biobakery/metaphlan2/metaphlan2 \
+            shell("humann2 --input {{i}} --output {} --threads 4 --metaphlan ~/software/biobakery/metaphlan2/metaphlan2 \
             --nucleotide-database ~/software/lauren_scratch/testing/data/humann2_database_downloads/chocophlan \
             --protein-database ~/software/lauren_scratch/testing/data/humann2_database_downloads/uniref".format(output_folder))
 
