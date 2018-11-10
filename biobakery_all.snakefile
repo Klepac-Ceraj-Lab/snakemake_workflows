@@ -7,7 +7,6 @@ configfile: "config.yaml"
 input_folder = config["input_folder"]
 output_folder = config["output_folder"]
 
-
 SAMPLES, = glob_wildcards(os.path.join(input_folder, "{samples}_R1_001.fastq.gz"))
 
 include: "workflows/kneaddata.snakefile"

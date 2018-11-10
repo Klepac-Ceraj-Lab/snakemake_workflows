@@ -17,44 +17,34 @@ rule humann2_output:
         path = expand(os.path.join(output_folder, "humann2/main/{samples}_pathabundance.tsv"), samples = SAMPLES)
     run:
         for i in zip(input):
-            shell("humann2 --input {i} --output {output.folder} --metaphlan ~/Documents/metaphlan2/metaphlan2 \
-            --nucleotide-database ~/Desktop/repos/echo/workflow/testing/data/humann2_database_downloads/chocophlan \
-            --protein-database ~/Desktop/repos/echo/workflow/testing/data/humann2_database_downloads/uniref \
-            --diamond ~/Documents/diamond-linux64/")
+            shell("humann2 --input {{i}} --output {} --threads 4 --metaphlan ~/software/biobakery/metaphlan2/metaphlan2 \
+            --nucleotide-database ~/software/lauren_scratch/testing/data/humann2_database_downloads/chocophlan \
+            --protein-database ~/software/lauren_scratch/testing/data/humann2_database_downloads/uniref".format(output_folder))
 
 
-rule humann2_rename:
+rule humann2_gf:
     input:
         expand(os.path.join(output_folder, "humann2/main/{samples}_genefamilies.tsv"), samples = SAMPLES)
     output:
-        expand(os.path.join(output_folder, "humann2/main/{samples}_genefamilies-names.tsv"), samples = SAMPLES)
+        names = expand(os.path.join(output_folder, "humann2/main/{samples}_genefamilies-names.tsv"), samples = SAMPLES),
+        ecs = expand(os.path.join(output_folder, "humann2/regroup/{samples}_ecs.tsv"), samples = SAMPLES),
+        gf = expand(os.path.join(output_folder, "humann2/relab/{samples}_genefamilies_relab.tsv"), samples = SAMPLES)
     run:
-        for i,o in zip(input,output):
-            shell("humann2_rename_table --input {i} --output {o} --names uniref90")
-
-rule humann2_regroup_1:
-    input:
-        expand(os.path.join(output_folder, "humann2/main/{samples}_genefamilies.tsv"), samples = SAMPLES)
-    output:
-        expand(os.path.join(output_folder, "humann2/regroup/{samples}_ecs.tsv"), samples = SAMPLES)
-    run:
-        for i,o in zip(input,output):
-            shell("humann2_regroup_table --input {i} --output {o} --groups uniref90_rxn")
+        for i,n,e,g in zip(input,output.names,output.ecs,output.gf):
+            shell("humann2_rename_table --input {i} --output {n} --names uniref90")
+            shell("humann2_regroup_table --input {i} --output {e} --groups uniref90_rxn")
+            shell("humann2_renorm_table -i {e} -o {g} -u relab")
 
 
 rule humann2_relab_1:
     input:
-        # folder = "testing/humann2/main/",
-        gf = expand(os.path.join(output_folder, "humann2/main/{samples}_genefamilies.tsv"), samples = SAMPLES),
         path = expand(os.path.join(output_folder, "humann2/main/{samples}_pathabundance.tsv"), samples = SAMPLES),
         ec = expand(os.path.join(output_folder, "humann2/regroup/{samples}_ecs.tsv"), samples = SAMPLES)
     output:
-        gf = expand(os.path.join(output_folder, "humann2/relab/{samples}_genefamilies_relab.tsv"), samples = SAMPLES),
         path = expand(os.path.join(output_folder, "humann2/relab/{samples}_pathabundance_relab.tsv"), samples = SAMPLES),
         ec = expand(os.path.join(output_folder, "humann2/relab/{samples}_ecs_relab.tsv"), samples = SAMPLES)
     run:
-        for g,p,e,x,y,z in zip(input.gf,input.path,input.ec,output.gf,output.path,output.ec):
-            shell("humann2_renorm_table -i {g} -o {x} -u relab")
+        for p,e,x,y,z in zip(input.path,input.ec,output.gf,output.path,output.ec):
             shell("humann2_renorm_table -i {p} -o {y} -u relab")
             shell("humann2_renorm_table -i {e} -o {z} -u relab")
 
