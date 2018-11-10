@@ -18,8 +18,8 @@ rule humann2_output:
     run:
         for i in zip(input):
             shell("humann2 --input {{i}} --output {} --metaphlan ~/software/biobakery/metaphlan2/metaphlan2 \
-            --nucleotide-database ~/software/lauren-scratch/testing/data/humann2_database_downloads/chocophlan \
-            --protein-database ~/software/lauren-scratch/testing/data/humann2_database_downloads/uniref".format(output_folder))
+            --nucleotide-database ~/software/lauren_scratch/testing/data/humann2_database_downloads/chocophlan \
+            --protein-database ~/software/lauren_scratch/testing/data/humann2_database_downloads/uniref".format(output_folder))
 
 
 rule humann2_gf:
