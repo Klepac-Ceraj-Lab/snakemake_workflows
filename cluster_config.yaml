@@ -1,0 +1,12 @@
+__default__:
+    processors: 8 # for -n arg
+    nodes: 1 # for -N arg, makes sure all processors are on same node
+    time: "0-04:00" # for -t, 4 hours
+    memory: 8000 # --mem, 8 Gb
+
+kneaddata_filter:
+    time: "0-08:00" # 8 hours
+
+humann2_output:
+    memory: 24000 # 24 Gb
+    time: "1-00:00" # 1 day
