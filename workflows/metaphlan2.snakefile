@@ -2,11 +2,11 @@ rule metaphlan2_cat:
     input:
         fwd = os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq"),
         rev = os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq"),
-    output: temp(os.path.join(kneadfolder, "{sample}.fastq"))
+    output: temp(os.path.join(kneadfolder, "{sample}_merged.fastq"))
     run: shell("cat {input} > {output}")
 
 rule metaphlan2_reads:
-    input: os.path.join(kneadfolder, "{sample}.fastq")
+    input: os.path.join(kneadfolder, "{sample}_merged.fastq")
     output:
         profile = os.path.join(output_folder, "metaphlan2/main/{sample}_profile.txt"),
         bowtie = os.path.join(output_folder, "metaphlan2/main/{sample}_bowtie2.txt"),
