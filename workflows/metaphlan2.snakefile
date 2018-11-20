@@ -1,5 +1,7 @@
 rule metaphlan2_cat:
-    input: os.path.join(kneadfolder, "{sample}_kneaddata_paired_{pair,[12]}.fastq")
+    input:
+        fwd = os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq"),
+        rev = os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq"),
     output: temp(os.path.join(kneadfolder, "{sample}.fastq"))
     run: shell("cat {input} > {output}")
 

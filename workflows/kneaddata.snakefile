@@ -40,8 +40,6 @@ rule kneaddata_counts:
     shell:
         "kneaddata_read_count_table --input {} --output {{output}}".format(kneadfolder)
 
-rule kneaddata_merge:
-    input
 
 rule kneaddata_report:
     input:
