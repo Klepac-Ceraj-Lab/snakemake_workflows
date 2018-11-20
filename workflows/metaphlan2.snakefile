@@ -1,19 +1,21 @@
+rule metaphlan2_cat:
+    input: os.path.join(kneadfolder, "{sample}_kneaddata_paired_{pair,[12]}.fastq")
+    output: temp(os.path.join(kneadfolder, "{sample}.fastq"))
+    run: shell("cat {input} > {output}")
+
 rule metaphlan2_reads:
-    input:
-        fwd = expand(os.path.join(output_folder, "kneaddata/kneaddata_output/{samples}_R1_001_kneaddata_paired_1.fastq"), samples = SAMPLES),
-        rev = expand(os.path.join(output_folder, "kneaddata/kneaddata_output/{samples}_R1_001_kneaddata_paired_2.fastq"), samples = SAMPLES)
+    input: os.path.join(kneadfolder, "{sample}.fastq")
     output:
-        profiles = expand(os.path.join(output_folder, "metaphlan2/main/{samples}_profile.txt") , samples = SAMPLES),
-        bowties = expand(os.path.join(output_folder, "metaphlan2/main/{samples}_bowtie2.txt"), samples = SAMPLES),
-        sams = expand(os.path.join(output_folder, "metaphlan2/main/{samples}.sam.bz2"), samples = SAMPLES)
+        profile = os.path.join(output_folder, "metaphlan2/main/{sample}_profile.txt"),
+        bowtie = os.path.join(output_folder, "metaphlan2/main/{sample}_bowtie2.txt"),
+        sam = os.path.join(output_folder, "metaphlan2/main/{sample}.sam.bz2")
     run:
-        for f,r,p,b,s in zip(input.fwd,input.rev,output.profiles,output.bowties,output.sams):
-            shell("metaphlan2.py {f},{r} {p} --bowtie2out {b} --samout {s} --input_type fastq --nproc 4")
+        shell("metaphlan2.py {input} {output.profile} --bowtie2out {output.bowtie} --samout {output.sam} --input_type fastq --nproc 8") # TODO: get nproc from settings
 
 
 rule metaphlan2_merge:
     input:
-        expand(os.path.join(output_folder, "metaphlan2/main/{samples}_profile.txt"), samples = SAMPLES)
+        expand(os.path.join(output_folder, "metaphlan2/main/{sample}_profile.txt"), sample = SAMPLES)
     output:
         os.path.join(output_folder, "metaphlan2/merged/merged_abundance_table.txt")
     shell:

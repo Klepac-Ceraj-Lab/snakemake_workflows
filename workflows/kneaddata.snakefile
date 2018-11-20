@@ -9,13 +9,13 @@ rule kneadfiles:
 
 rule knead_cat1:
     input: os.path.join(input_folder, "{sample}_{lane,L\d+}_R1_001.fastq.gz"),
-    output: os.path.join(input_folder, "{sample}.1.fastq.gz"),
+    output: temp(os.path.join(input_folder, "{sample}.1.fastq.gz")),
     run:
         shell("cat {input} > {output}")
 
 rule knead_cat2:
     input: os.path.join(input_folder, "{sample}_{lane,L\d+}_R2_001.fastq.gz"),
-    output: os.path.join(input_folder, "{sample}.2.fastq.gz"),
+    output: temp(os.path.join(input_folder, "{sample}.2.fastq.gz")),
     run:
         shell("cat {input} > {output}")
 
