@@ -1,20 +1,19 @@
 kneadfolder = os.path.join(output_folder, "kneaddata/kneaddata_output/")
 (samples, lanes) = glob_wildcards(os.path.join(input_folder, "{sample}_{lane,L\d+}_R1_001.fastq.gz"))
 
-
 rule kneadfiles:
     input:
         fwd = expand(os.path.join(kneadfolder, "{sample}_{lane}_R1_001_kneaddata_paired_1.fastq"), sample = samples, lane=lanes),
         rev = expand(os.path.join(kneadfolder, "{sample}_{lane}_R2_001_kneaddata_paired_2.fastq"), sample = samples, lane=lanes)
 
 rule knead_cat1:
-    input: expand(os.path.join(input_folder, "{sample}_{lane}_R1_001.fastq.gz"), lane=lanes)
+    input: expand(os.path.join(input_folder, "{{sample}}_{lane}_R1_001.fastq.gz"), lane=lanes)
     output: temp(os.path.join(input_folder, "{sample}.1.fastq.gz")),
     run:
         shell("cat {input} > {output}")
 
 rule knead_cat2:
-    input: expand(os.path.join(input_folder, "{sample}_{lane}_R2_001.fastq.gz"), lane=lanes)
+    input: expand(os.path.join(input_folder, "{{sample}}_{lane}_R2_001.fastq.gz"), lane=lanes)
     output: temp(os.path.join(input_folder, "{sample}.2.fastq.gz")),
     run:
         shell("cat {input} > {output}")
