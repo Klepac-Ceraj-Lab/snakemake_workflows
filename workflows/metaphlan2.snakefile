@@ -3,7 +3,8 @@ rule metaphlan2_cat:
         fwd = os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq"),
         rev = os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq"),
     output: temp(os.path.join(kneadfolder, "{sample}_merged.fastq"))
-    run: shell("cat {input} > {output}")
+    run:
+        shell("cat {input} > {output}")
 
 rule metaphlan2_reads:
     input: os.path.join(kneadfolder, "{sample}_merged.fastq")
@@ -20,8 +21,8 @@ rule metaphlan2_merge:
         expand(os.path.join(output_folder, "metaphlan2/main/{sample}_profile.txt"), sample = SAMPLES)
     output:
         os.path.join(output_folder, "metaphlan2/merged/merged_abundance_table.txt")
-    shell:
-        "merge_metaphlan_tables.py {input} > {output}"
+    run:
+        shell("merge_metaphlan_tables.py {input} > {output}")
 
 
 rule metaphlan2_report:
