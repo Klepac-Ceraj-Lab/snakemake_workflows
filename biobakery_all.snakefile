@@ -23,7 +23,7 @@ rule report:
     input:
         kneaddata = os.path.join(output_folder, "kneaddata/kneaddata_report.html"),
         metaphlan2 = os.path.join(output_folder, "metaphlan2/metaphlan2_report.html"),
-        humann2 = os.path.join(output_folder, "humann2/humann2_report.html")
+        # humann2 = os.path.join(output_folder, "humann2/humann2_report.html")
     output:
         os.path.join(output_folder, "report.html")
     run:
