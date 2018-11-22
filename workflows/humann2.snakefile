@@ -15,7 +15,7 @@ rule humann2:
         shell("humann2 --input {{input}} --output {} --threads 8 --nucleotide-database {} --protein-database {}".format(
             os.path.join(humannfolder, "main"),
             config["chocophlan"],
-            config["uniref"])
+            config["uniref"]))
 
 
 rule humann2_regroup_ecs:

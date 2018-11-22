@@ -25,7 +25,7 @@ rule kneaddata:
     input:
         fwd = os.path.join(input_folder, "{sample}.1.fastq.gz"),
         rev = os.path.join(input_folder, "{sample}.2.fastq.gz"),
-        # db = config["databases"]["human_sequences"]
+        db = config["databases"]["human_sequences"]
     output:
         fwd = os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq"),
         rev = os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq")
