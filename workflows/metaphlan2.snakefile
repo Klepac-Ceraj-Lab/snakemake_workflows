@@ -11,8 +11,8 @@ rule metaphlan2_cat:
 rule metaphlan2:
     input: os.path.join(kneadfolder, "{sample}_merged.fastq")
     output:
-        profile = os.path.join(metaphlanfolder, "main", "{sample}_profile.txt"),
-        bowtie = os.path.join(metaphlanfolder, "main", "{sample}_bowtie2.txt"),
+        profile = os.path.join(metaphlanfolder, "main", "{sample}_profile.tsv"),
+        bowtie = os.path.join(metaphlanfolder, "main", "{sample}_bowtie2.tsv"),
         sam = os.path.join(metaphlanfolder, "main", "{sample}.sam.bz2")
     run:
         shell("metaphlan2.py {input} {output.profile} --bowtie2out {output.bowtie} --samout {output.sam} --input_type fastq --nproc 8") # TODO: get nproc from settings
@@ -20,18 +20,16 @@ rule metaphlan2:
 
 rule metaphlan2_merge:
     input:
-        expand(os.path.join(metaphlanfolder, "main", "{sample}_profile.txt"), sample = samples)
+        expand(os.path.join(metaphlanfolder, "main", "{sample}_profile.tsv"), sample = samples)
     output:
-        os.path.join(metaphlanfolder, "merged", "merged_abundance_table.txt")
-    wildcard_constraints:
-        sample = "[\w\-]-(F|E)[A-Z0-9]+"
+        os.path.join(metaphlanfolder, "merged", "merged_abundance_table.tsv")
     run:
         shell("merge_metaphlan_tables.py {input} > {output}")
 
 
 rule metaphlan2_report:
     input:
-        os.path.join(metaphlanfolder, "merged", "merged_abundance_table.txt")
+        os.path.join(metaphlanfolder, "merged", "merged_abundance_table.tsv")
     output:
         os.path.join(metaphlanfolder, "metaphlan2_report.html")
     run:

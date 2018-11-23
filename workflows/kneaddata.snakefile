@@ -11,20 +11,20 @@ print(lanes)
 
 rule kneaddata_cat1:
     input: expand(os.path.join(input_folder, "{{sample}}_{lane}_R1_001.fastq.gz"), lane=lanes)
-    output: os.path.join(input_folder, "{sample}.1.fastq.gz")
+    output: os.path.join(input_folder, "{sample}_1.fastq.gz")
     run:
         shell("cat {input} > {output}")
 
 rule kneaddata_cat2:
     input: expand(os.path.join(input_folder, "{{sample}}_{lane}_R2_001.fastq.gz"), lane=lanes)
-    output: os.path.join(input_folder, "{sample}.2.fastq.gz")
+    output: os.path.join(input_folder, "{sample}_2.fastq.gz")
     run:
         shell("cat {input} > {output}")
 
 rule kneaddata:
     input:
-        fwd = os.path.join(input_folder, "{sample}.1.fastq.gz"),
-        rev = os.path.join(input_folder, "{sample}.2.fastq.gz"),
+        fwd = os.path.join(input_folder, "{sample}_1.fastq.gz"),
+        rev = os.path.join(input_folder, "{sample}_2.fastq.gz"),
         db = config["databases"]["human_sequences"]
     output:
         fwd = os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq"),
