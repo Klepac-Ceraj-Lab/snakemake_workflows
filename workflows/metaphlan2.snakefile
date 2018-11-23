@@ -8,7 +8,7 @@ rule metaphlan2_cat:
     run:
         shell("cat {input} > {output}")
 
-rule metaphlan2_reads:
+rule metaphlan2:
     input: os.path.join(kneadfolder, "{sample}_merged.fastq")
     output:
         profile = os.path.join(metaphlanfolder, "main", "{sample}_profile.txt"),

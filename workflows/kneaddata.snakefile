@@ -9,13 +9,13 @@ lanes.sort()
 print(samples)
 print(lanes)
 
-rule knead_cat1:
+rule kneaddata_cat1:
     input: expand(os.path.join(input_folder, "{{sample}}_{lane}_R1_001.fastq.gz"), lane=lanes)
     output: os.path.join(input_folder, "{sample}.1.fastq.gz")
     run:
         shell("cat {input} > {output}")
 
-rule knead_cat2:
+rule kneaddata_cat2:
     input: expand(os.path.join(input_folder, "{{sample}}_{lane}_R2_001.fastq.gz"), lane=lanes)
     output: os.path.join(input_folder, "{sample}.2.fastq.gz")
     run:

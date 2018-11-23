@@ -66,7 +66,6 @@ rule humann2_merge_paths:
     output: os.path.join(humannfolder, "merged", "pathabundance.tsv")
     run: shell("humann2_join_tables -i {input} -o {output} --file_name pathabundance")
 
-
 rule humann2_merge_gf_relab:
     input: expand(os.path.join(humannfolder, "relab", "{sample}_genefamilies_relab.tsv"), sample = samples)
     output: os.path.join(humannfolder, "merged", "genefamilies_relab.tsv")
