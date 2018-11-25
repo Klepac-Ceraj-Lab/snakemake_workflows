@@ -14,8 +14,8 @@ rule humann2:
         # TODO: get threads from settings
         shell("humann2 --input {{input}} --output {} --threads 8 --nucleotide-database {} --protein-database {}".format(
             os.path.join(humannfolder, "main"),
-            config["chocophlan"],
-            config["uniref"]))
+            config["databases"]["chocophlan"],
+            config["databases"]["uniref"]))
 
 
 rule humann2_regroup_ecs:
