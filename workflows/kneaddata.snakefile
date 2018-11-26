@@ -19,7 +19,7 @@ rule kneaddata:
         fwd = os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq"),
         rev = os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq")
     run:
-        shell("kneaddata --input {{input.fwd}} --input {{input.rev}} --reference-db {{input.db}} --output {} --output-prefix {{wildcards.sample}}".format(kneadfolder))
+        shell("kneaddata --input {{input.fwd}} --input {{input.rev}} --reference-db {{input.db}} --output {} --output-prefix {{wildcards.sample}}_kneaddata".format(kneadfolder))
 
 
 rule kneaddata_counts:
