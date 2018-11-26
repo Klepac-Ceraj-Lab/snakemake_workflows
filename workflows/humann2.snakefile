@@ -88,7 +88,7 @@ rule humann2_report:
         path = os.path.join(humannfolder, "merged", "pathabundance_relab.tsv"),
         ec = os.path.join(humannfolder, "merged", "ecs_relab.tsv")
     output:
-        os.path.join(output_folder, "humann2_report.html")
+        os.path.join(humannfolder, "humann2_report.html")
     run:
         from snakemake.utils import report
         report("""
