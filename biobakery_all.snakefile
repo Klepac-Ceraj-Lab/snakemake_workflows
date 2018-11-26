@@ -13,13 +13,13 @@ samples.sort()
 lanes = list(set(lanes))
 lanes.sort()
 
-include: "workflows/kneaddata.snakefile"
-include: "workflows/metaphlan2.snakefile"
-include: "workflows/humann2.snakefile"
-
 kneadfolder = os.path.join(output_folder, "kneaddata")
 metaphlanfolder = os.path.join(output_folder, "metaphlan2")
 humannfolder = os.path.join(input_folder, "humann2")
+
+include: "workflows/kneaddata.snakefile"
+include: "workflows/metaphlan2.snakefile"
+include: "workflows/humann2.snakefile"
 
 rule all:
     input:
