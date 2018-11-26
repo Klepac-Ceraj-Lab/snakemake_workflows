@@ -1,14 +1,3 @@
-kneadfolder = os.path.join(output_folder, "kneaddata/")
-(samples, lanes) = glob_wildcards(os.path.join(input_folder, "{sample}_{lane,L\d+}_R1_001.fastq.gz"))
-
-samples = list(set(samples))
-samples.sort()
-lanes = list(set(lanes))
-lanes.sort()
-
-print(samples)
-print(lanes)
-
 rule kneaddata_cat1:
     input: expand(os.path.join(input_folder, "{{sample}}_{lane}_R1_001.fastq.gz"), lane=lanes)
     output: os.path.join(input_folder, "{sample}_1.fastq.gz")

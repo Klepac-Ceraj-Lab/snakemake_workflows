@@ -1,5 +1,3 @@
-metaphlanfolder = os.path.join(output_folder, "metaphlan2")
-
 rule metaphlan2_cat:
     input:
         fwd = os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq"),

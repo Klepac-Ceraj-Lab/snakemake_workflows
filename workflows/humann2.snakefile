@@ -1,5 +1,3 @@
-humannfolder = os.path.join(input_folder, "humann2")
-
 ##############
 # Per Sample #
 ##############
