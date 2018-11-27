@@ -15,7 +15,7 @@ lanes.sort()
 
 kneadfolder = os.path.join(output_folder, "kneaddata")
 metaphlanfolder = os.path.join(output_folder, "metaphlan2")
-humannfolder = os.path.join(input_folder, "humann2")
+humannfolder = os.path.join(output_folder, "humann2")
 
 include: "workflows/kneaddata.snakefile"
 include: "workflows/metaphlan2.snakefile"
