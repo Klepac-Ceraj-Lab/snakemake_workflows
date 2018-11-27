@@ -4,7 +4,7 @@
 
 rule humann2:
     input:
-        os.path.join(metaphlanfolder, "main", "{sample}.sam.bz2")
+        os.path.join(metaphlanfolder, "main", "{sample}.sam")
     output:
         samples = os.path.join(humannfolder, "main", "{sample}_genefamilies.tsv"),
         path = os.path.join(humannfolder, "main", "{sample}_pathabundance.tsv")
