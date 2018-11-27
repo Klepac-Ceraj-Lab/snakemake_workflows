@@ -67,17 +67,17 @@ rule humann2_merge_paths:
 rule humann2_merge_gf_relab:
     input: expand(os.path.join(humannfolder, "relab", "{sample}_genefamilies_relab.tsv"), sample = samples)
     output: os.path.join(humannfolder, "merged", "genefamilies_relab.tsv")
-    run: shell("humann2_join_tables -i {input} -o {output} --file_name genefamilies_relab")
+    run: shell("humann2_join_tables -i {} -o {{output}} --file_name genefamilies_relab".format(os.path.join(humannfolder, "merged")))
 
 rule humann2_merge_ecs_relab:
     input: expand(os.path.join(humannfolder, "relab", "{sample}_ecs_relab.tsv"), sample = samples)
     output: os.path.join(humannfolder, "merged", "ecs_relab.tsv")
-    run: shell("humann2_join_tables -i {input} -o {output} --file_name ecs_relab")
+    run: shell("humann2_join_tables -i {} -o {{output}} --file_name ecs_relab".format(os.path.join(humannfolder, "merged")))
 
 rule humann2_merge_paths_relab:
     input: expand(os.path.join(humannfolder, "relab", "{sample}_pathabundance_relab.tsv"), sample = samples)
     output: os.path.join(humannfolder, "merged", "pathabundance_relab.tsv")
-    run: shell("humann2_join_tables -i {input} -o {output} --file_name pathabundance_relab")
+    run: shell("humann2_join_tables -i {} -o {{output}} --file_name pathabundance_relab".format(os.path.join(humannfolder, "merged")))
 
 
 rule humann2_report:
