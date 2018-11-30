@@ -10,7 +10,7 @@ rule humann2:
         path = os.path.join(humannfolder, "main", "{sample}_pathabundance.tsv")
     run:
         # TODO: get threads from settings
-        shell("humann2 --input {{input}} --output {} --threads 8 --nucleotide-database {} --protein-database {} --input-format sam".format(
+        shell("humann2 --input {{input}} --output {} --threads 8 --nucleotide-database {} --protein-database {} --input-format sam --remove-temp-output".format(
             os.path.join(humannfolder, "main"),
             config["databases"]["chocophlan"],
             config["databases"]["uniref"]))
