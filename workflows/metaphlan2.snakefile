@@ -1,30 +1,35 @@
-rule metaphlan2_reads:
+rule metaphlan2_cat:
     input:
-        fwd = expand(os.path.join(output_folder, "kneaddata/kneaddata_output/{samples}_R1_001_kneaddata_paired_1.fastq"), samples = SAMPLES),
-        rev = expand(os.path.join(output_folder, "kneaddata/kneaddata_output/{samples}_R1_001_kneaddata_paired_2.fastq"), samples = SAMPLES)
-    output:
-        profiles = expand(os.path.join(output_folder, "metaphlan2/main/{samples}_profile.txt") , samples = SAMPLES),
-        bowties = expand(os.path.join(output_folder, "metaphlan2/main/{samples}_bowtie2.txt"), samples = SAMPLES),
-        sams = expand(os.path.join(output_folder, "metaphlan2/main/{samples}.sam.bz2"), samples = SAMPLES)
+        fwd = os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq"),
+        rev = os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq"),
+    output: temp(os.path.join(kneadfolder, "{sample}_merged.fastq"))
     run:
-        for f,r,p,b,s in zip(input.fwd,input.rev,output.profiles,output.bowties,output.sams):
-            shell("metaphlan2.py {f},{r} {p} --bowtie2out {b} --samout {s} --input_type fastq --nproc 4")
+        shell("cat {input} > {output}")
+
+rule metaphlan2:
+    input: os.path.join(kneadfolder, "{sample}_merged.fastq")
+    output:
+        profile = os.path.join(metaphlanfolder, "main", "{sample}_profile.tsv"),
+        bowtie = os.path.join(metaphlanfolder, "main", "{sample}_bowtie2.tsv"),
+        sam = os.path.join(metaphlanfolder, "main", "{sample}.sam") # TODO: compress this later
+    run:
+        shell("metaphlan2.py {input} {output.profile} --bowtie2out {output.bowtie} --samout {output.sam} --input_type fastq --nproc 8") # TODO: get nproc from settings
 
 
 rule metaphlan2_merge:
     input:
-        expand(os.path.join(output_folder, "metaphlan2/main/{samples}_profile.txt"), samples = SAMPLES)
+        expand(os.path.join(metaphlanfolder, "main", "{sample}_profile.tsv"), sample = samples)
     output:
-        os.path.join(output_folder, "metaphlan2/merged/merged_abundance_table.txt")
-    shell:
-        "merge_metaphlan_tables.py {input} > {output}"
+        os.path.join(metaphlanfolder, "merged", "merged_abundance_table.tsv")
+    run:
+        shell("merge_metaphlan_tables.py {input} > {output}")
 
 
 rule metaphlan2_report:
     input:
-        os.path.join(output_folder, "metaphlan2/merged/merged_abundance_table.txt")
+        os.path.join(metaphlanfolder, "merged", "merged_abundance_table.tsv")
     output:
-        os.path.join(output_folder, "metaphlan2/metaphlan2_report.html")
+        os.path.join(metaphlanfolder, "metaphlan2_report.html")
     run:
         from snakemake.utils import report
         report("""

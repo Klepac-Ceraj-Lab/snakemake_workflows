@@ -7,9 +7,13 @@ by
 ## Usage
 
 1. Make a copy of `config_template.yaml` called `config.yaml`.
-2. Set the variables for your environment.
-3. Run:
+2. Make a copy of `cluster_config.yaml` called `cluster.yaml`.
+3. Set the variables for your environment.
+4. Run:
 
 ```sh
-$ snakemake -s bioabakery_all.snakefile
+$ snakemake -s ~/software/kevin_scratch/repos/snakemake_workflows/biobakery_all.snakefile \
+    --configfile config.yaml --cluster-config cluster.yaml \
+    --cluster "sbatch -n {cluster.processors} -N 1 -t {cluster.time} --mem {cluster.memory} -o output/logs/{rule}-%j.out -e output/logs/{rule}-%j.err -p newnodes"\
+    --jobs 16
 ```

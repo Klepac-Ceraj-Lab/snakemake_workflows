@@ -1,91 +1,92 @@
-rule humann2_prep:
+##############
+# Per Sample #
+##############
+
+rule humann2:
     input:
-        fwd = expand(os.path.join(output_folder, "kneaddata/kneaddata_output/{samples}_R1_001_kneaddata_paired_1.fastq"), samples = SAMPLES),
-        rev = expand(os.path.join(output_folder, "kneaddata/kneaddata_output/{samples}_R1_001_kneaddata_paired_2.fastq"), samples = SAMPLES)
+        os.path.join(metaphlanfolder, "main", "{sample}.sam")
     output:
-        expand(os.path.join(output_folder, "kneaddata/kneaddata_output/{samples}.fastq"), samples = SAMPLES)
+        samples = os.path.join(humannfolder, "main", "{sample}_genefamilies.tsv"),
+        path = os.path.join(humannfolder, "main", "{sample}_pathabundance.tsv")
     run:
-        for f,r,o in zip(input.fwd,input.rev,output):
-            shell("cat {f} {r} > {o}")
+        # TODO: get threads from settings
+        shell("humann2 --input {{input}} --output {} --threads 8 --nucleotide-database {} --protein-database {} --input-format sam --remove-temp-output".format(
+            os.path.join(humannfolder, "main"),
+            config["databases"]["chocophlan"],
+            config["databases"]["uniref"]))
 
 
-rule humann2_output:
-    input:
-        expand(os.path.join(output_folder, "kneaddata/kneaddata_output/{samples}.fastq"), samples = SAMPLES)
-    output:
-        samples = expand(os.path.join(output_folder, "humann2/main/{samples}_genefamilies.tsv"), samples = SAMPLES),
-        path = expand(os.path.join(output_folder, "humann2/main/{samples}_pathabundance.tsv"), samples = SAMPLES)
-    run:
-        for i in zip(input):
-            shell("humann2 --input {{i}} --output {} --threads 4 --metaphlan ~/software/biobakery/metaphlan2/metaphlan2 \
-            --nucleotide-database ~/software/lauren_scratch/testing/data/humann2_database_downloads/chocophlan \
-            --protein-database ~/software/lauren_scratch/testing/data/humann2_database_downloads/uniref".format(output_folder))
+rule humann2_regroup_ecs:
+    input: os.path.join(humannfolder, "main", "{sample}_genefamilies.tsv")
+    output: os.path.join(humannfolder, "regroup", "{sample}_ecs.tsv")
+    run: shell("humann2_regroup_table --input {input} --output {output} --groups uniref90_rxn")
+
+rule humann2_renorm_gf:
+    input: os.path.join(humannfolder, "main", "{sample}_genefamilies.tsv")
+    output: os.path.join(humannfolder, "relab", "{sample}_genefamilies_relab.tsv")
+    run: shell("humann2_renorm_table -i {input} -o {output} -u relab")
+
+rule humann2_renorm_ecs:
+    input: os.path.join(humannfolder, "regroup", "{sample}_ecs.tsv")
+    output: os.path.join(humannfolder, "relab", "{sample}_ecs_relab.tsv")
+    run: shell("humann2_renorm_table -i {input} -o {output} -u relab")
+
+rule humann2_renorm_paths:
+    input: os.path.join(humannfolder, "main", "{sample}_pathabundance.tsv")
+    output: os.path.join(humannfolder, "relab", "{sample}_pathabundance_relab.tsv")
+    run: shell("humann2_renorm_table -i {input} -o {output} -u relab")
 
 
-rule humann2_gf:
-    input:
-        expand(os.path.join(output_folder, "humann2/main/{samples}_genefamilies.tsv"), samples = SAMPLES)
-    output:
-        names = expand(os.path.join(output_folder, "humann2/main/{samples}_genefamilies-names.tsv"), samples = SAMPLES),
-        ecs = expand(os.path.join(output_folder, "humann2/regroup/{samples}_ecs.tsv"), samples = SAMPLES),
-        gf = expand(os.path.join(output_folder, "humann2/relab/{samples}_genefamilies_relab.tsv"), samples = SAMPLES)
-    run:
-        for i,n,e,g in zip(input,output.names,output.ecs,output.gf):
-            shell("humann2_rename_table --input {i} --output {n} --names uniref90")
-            shell("humann2_regroup_table --input {i} --output {e} --groups uniref90_rxn")
-            shell("humann2_renorm_table -i {e} -o {g} -u relab")
+# rule humann2_rename_gf:
+#     input: os.path.join(humannfolder, "main", "{samples}_genefamilies.tsv")
+#     output: os.path.join(humannfolder, "main", "{samples}_genefamilies_names.tsv"),
+#     run:
+#         shell("humann2_rename_table --input {input} --output {output} --names uniref90")
 
 
-rule humann2_relab_1:
-    input:
-        path = expand(os.path.join(output_folder, "humann2/main/{samples}_pathabundance.tsv"), samples = SAMPLES),
-        ec = expand(os.path.join(output_folder, "humann2/regroup/{samples}_ecs.tsv"), samples = SAMPLES)
-    output:
-        path = expand(os.path.join(output_folder, "humann2/relab/{samples}_pathabundance_relab.tsv"), samples = SAMPLES),
-        ec = expand(os.path.join(output_folder, "humann2/relab/{samples}_ecs_relab.tsv"), samples = SAMPLES)
-    run:
-        for p,e,x,y,z in zip(input.path,input.ec,output.gf,output.path,output.ec):
-            shell("humann2_renorm_table -i {p} -o {y} -u relab")
-            shell("humann2_renorm_table -i {e} -o {z} -u relab")
 
+###############
+# All samples #
+###############
 
-rule humann2_join:
-    input:
-        one = os.path.join(output_folder, "humann2/main"),
-        two = os.path.join(output_folder, "humann2/regroup"),
-        regroup = expand(os.path.join(output_folder, "humann2/regroup/{samples}_ecs.tsv"), samples = SAMPLES)
-    output:
-        gf = os.path.join(output_folder, "humann2/merged/genefamilies.tsv"),
-        path = os.path.join(output_folder, "humann2/merged/pathabundance.tsv"),
-        ec = os.path.join(output_folder, "humann2/merged/ecs.tsv")
-    run:
-        shell("humann2_join_tables -i {input.one} -o {output.gf} --file_name genefamilies")
-        shell("humann2_join_tables -i {input.one} -o {output.path} --file_name pathabundance")
-        shell("humann2_join_tables -i {input.two} -o {output.ec} --file_name ecs")
+rule humann2_merge_gf:
+    input: expand(os.path.join(humannfolder, "main", "{sample}_genefamilies.tsv"), sample = samples)
+    output: os.path.join(humannfolder, "merged", "genefamilies.tsv")
+    run: shell("humann2_join_tables -i {} -o {{output}} --file_name genefamilies".format(os.path.join(humannfolder, "main")))
 
+rule humann2_merge_ecs:
+    input: expand(os.path.join(humannfolder, "regroup", "{sample}_ecs.tsv"), sample = samples)
+    output: os.path.join(humannfolder, "merged", "ecs.tsv")
+    run: shell("humann2_join_tables -i {} -o {{output}} --file_name ecs".format(os.path.join(humannfolder, "regroup")))
 
-rule humann2_relab_2:
-    input:
-        gf = expand(os.path.join(output_folder, "humann2/relab/{samples}_genefamilies_relab.tsv"), samples = SAMPLES),
-        path = expand(os.path.join(output_folder, "humann2/relab/{samples}_pathabundance_relab.tsv"), samples = SAMPLES),
-        ec = expand(os.path.join(output_folder, "humann2/relab/{samples}_ecs_relab.tsv"), samples = SAMPLES)
-    output:
-        gf = os.path.join(output_folder, "humann2/merged/genefamilies_relab.tsv"),
-        path = os.path.join(output_folder, "humann2/merged/pathabundance_relab.tsv"),
-        ec = os.path.join(output_folder, "humann2/merged/ecs_relab.tsv")
-    run:
-        shell("humann2_join_tables -i testing/humann2/relab -o {output.gf} --file_name genefamilies_relab")
-        shell("humann2_join_tables -i testing/humann2/relab -o {output.path} --file_name pathabundance_relab")
-        shell("humann2_join_tables -i testing/humann2/relab -o {output.ec} --file_name ecs_relab")
+rule humann2_merge_paths:
+    input: expand(os.path.join(humannfolder, "main", "{sample}_pathabundance.tsv"), sample = samples)
+    output: os.path.join(humannfolder, "merged", "pathabundance.tsv")
+    run: shell("humann2_join_tables -i {} -o {{output}} --file_name pathabundance".format(os.path.join(humannfolder, "main")))
+
+rule humann2_merge_gf_relab:
+    input: expand(os.path.join(humannfolder, "relab", "{sample}_genefamilies_relab.tsv"), sample = samples)
+    output: os.path.join(humannfolder, "merged", "genefamilies_relab.tsv")
+    run: shell("humann2_join_tables -i {} -o {{output}} --file_name genefamilies_relab".format(os.path.join(humannfolder, "relab")))
+
+rule humann2_merge_ecs_relab:
+    input: expand(os.path.join(humannfolder, "relab", "{sample}_ecs_relab.tsv"), sample = samples)
+    output: os.path.join(humannfolder, "merged", "ecs_relab.tsv")
+    run: shell("humann2_join_tables -i {} -o {{output}} --file_name ecs_relab".format(os.path.join(humannfolder, "relab")))
+
+rule humann2_merge_paths_relab:
+    input: expand(os.path.join(humannfolder, "relab", "{sample}_pathabundance_relab.tsv"), sample = samples)
+    output: os.path.join(humannfolder, "merged", "pathabundance_relab.tsv")
+    run: shell("humann2_join_tables -i {} -o {{output}} --file_name pathabundance_relab".format(os.path.join(humannfolder, "relab")))
 
 
 rule humann2_report:
     input:
-        gf = os.path.join(output_folder, "humann2/merged/genefamilies_relab.tsv"),
-        path = os.path.join(output_folder, "humann2/merged/pathabundance_relab.tsv"),
-        ec = os.path.join(output_folder, "humann2/merged/ecs_relab.tsv")
+        gf = os.path.join(humannfolder, "merged", "genefamilies_relab.tsv"),
+        path = os.path.join(humannfolder, "merged", "pathabundance_relab.tsv"),
+        ec = os.path.join(humannfolder, "merged", "ecs_relab.tsv")
     output:
-        os.path.join(output_folder, "humann2/humann2_report.html")
+        os.path.join(humannfolder, "humann2_report.html")
     run:
         from snakemake.utils import report
         report("""
