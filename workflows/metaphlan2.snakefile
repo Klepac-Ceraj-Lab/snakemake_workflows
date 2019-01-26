@@ -24,16 +24,16 @@ rule metaphlan2_merge:
     run:
         shell("merge_metaphlan_tables.py {input} > {output}")
 
-rule metaphlan2_sambam:
+rule metaphlan2_bz2:
     input: os.path.join(metaphlanfolder, "main", "{sample}.sam")
-    output: os.path.join(metaphlanfolder, "main", "{sample}.bam)
+    output: os.path.join(metaphlanfolder, "main", "{sample}.sam.bz2)
     run:
-        shell("samtools view -bS {input} > {output}")
+        shell("bzip2 {input}")
 
 rule metaphlan2_report:
     input:
         abundance_table = os.path.join(metaphlanfolder, "merged", "merged_abundance_table.tsv"),
-        bams = expand(os.path.join(metaphlanfolder, "main", "{sample}.bam"), sample = samples)
+        sams = expand(os.path.join(metaphlanfolder, "main", "{sample}.sam.bz2"), sample = samples)
     output:
         os.path.join(metaphlanfolder, "metaphlan2_report.html")
     run:
