@@ -12,4 +12,4 @@ metaphlan2:
 
 humann2:
     memory: 24000 # 24 Gb
-    time: "1-00:00" # 1 day
+    time: "12:00" # 12 hours
