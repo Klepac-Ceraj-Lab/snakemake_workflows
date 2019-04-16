@@ -12,7 +12,7 @@ by
 4. Run:
 
 ```sh
-$ snakemake -s ~/software/kevin_scratch/repos/snakemake_workflows/biobakery_all.snakefile \
+$ snakemake -s /home/vklepacc/software/repos/snakemake_workflows/biobakery_all.snakefile \
     --configfile config.yaml --cluster-config cluster.yaml \
     --cluster "sbatch -n {cluster.processors} -N 1 -t {cluster.time} --mem {cluster.memory} -o output/logs/{rule}-%j.out -e output/logs/{rule}-%j.err -p newnodes"\
     --jobs 16 --latency-wait 15
