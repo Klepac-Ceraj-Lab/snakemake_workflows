@@ -32,7 +32,7 @@ rule metaphlan2_bz2:
 
 rule metaphlan2_bz2:
     input: os.path.join(metaphlanfolder, "main", "{sample}.sam")
-    output: os.path.join(metaphlanfolder, "main", "{sample}.sam.bz2)
+    output: os.path.join(metaphlanfolder, "main", "{sample}.sam.bz2")
     run:
         shell("bzip2 {input}")
 
