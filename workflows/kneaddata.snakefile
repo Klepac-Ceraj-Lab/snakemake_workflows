@@ -45,7 +45,7 @@ rule kneaddata_gzip_reverse:
 
 rule kneaddata_report:
     input:
-        fwd: dynamic(expand(os.path.join(kneadfolder, "{sample}_{{filter_type}}_1.fastq.gz"), sample = samples)),
+        fwd: dynamic(expand(os.path.join(kneadfolder, "{sample}_{{filter_type}}_1.fastq.gz"), sample = samples))
         rev: dynamic(expand(os.path.join(kneadfolder, "{sample}_{{filter_type}}_2.fastq.gz"), sample = samples))
     output:
         os.path.join(kneadfolder, "kneaddata_report.html")
