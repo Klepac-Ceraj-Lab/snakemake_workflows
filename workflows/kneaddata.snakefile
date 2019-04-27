@@ -23,9 +23,9 @@ rule kneaddata:
 
 rule kneaddata_gzip:
     input:
-        dynamic(os.path.join(kneadfolder, "{sample}_kneaddata{{filter_type}}.fastq"))
+        temp(dynamic(expand(os.path.join(kneadfolder, "{sample}_kneaddata{{filter_type}}.fastq"), sample=samples)))
     output:
-        dynamic(os.path.join(kneadfolder, "{sample}_kneaddata{{filter_type}}.fastq.gz"))
+        dynamic(expand(os.path.join(kneadfolder, "{sample}_kneaddata{{filter_type}}.fastq.gz"), sample=samples))
     run:
          shell("gzip {input}")
 
