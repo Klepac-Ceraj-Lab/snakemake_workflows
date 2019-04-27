@@ -23,14 +23,11 @@ rule kneaddata:
 
 rule kneaddata_gzip:
     input:
-        fwd = dynamic(os.path.join(kneadfolder, "{sample}_kneaddata{{filter_type}}.fastq")),
-        rev = dynamic(os.path.join(kneadfolder, "{sample}_kneaddata{{filter_type}}.fastq"))
+        dynamic(os.path.join(kneadfolder, "{sample}_kneaddata{{filter_type}}.fastq"))
     output:
-        fwd = dynamic(os.path.join(kneadfolder, "{sample}_kneaddata{{filter_type}}.fastq.gz")),
-        rev = dynamic(os.path.join(kneadfolder, "{sample}_kneaddata{{filter_type}}.fastq.gz"))
+        dynamic(os.path.join(kneadfolder, "{sample}_kneaddata{{filter_type}}.fastq.gz"))
     run:
-         shell("gzip {input.fwd}")
-         shell("gzip {input.rev}")
+         shell("gzip {input}")
 
 rule kneaddata_counts:
     input:
