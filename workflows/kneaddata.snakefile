@@ -16,8 +16,8 @@ rule kneaddata:
         rev = os.path.join(input_folder, "{sample}_2.fastq.gz"),
         db = config["databases"]["human_sequences"]
     output:
-        fwd = temp(os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq"), sample=samples),
-        rev = temp(os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq"), sample=samples)
+        fwd = temp(os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq")),
+        rev = temp(os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq"))
     run:
         shell("kneaddata --input {{input.fwd}} --input {{input.rev}} --reference-db {{input.db}} --output {} --output-prefix {{wildcards.sample}}_kneaddata".format(kneadfolder))
 
