@@ -12,8 +12,8 @@ rule kneaddata_cat2:
 
 rule kneaddata:
     input:
-        fwd = os.path.join(input_folder, "{sample}_1.fastq.gz"),
-        rev = os.path.join(input_folder, "{sample}_2.fastq.gz"),
+        fwd = expand(os.path.join(input_folder, "{sample}_1.fastq.gz"), sample=samples),
+        rev = expand(os.path.join(input_folder, "{sample}_2.fastq.gz"), sample=samples),
         db = config["databases"]["human_sequences"]
     output:
         fwd = temp(expand(os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq"), sample=samples)),
