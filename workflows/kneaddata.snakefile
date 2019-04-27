@@ -21,17 +21,17 @@ rule kneaddata:
     run:
         shell("kneaddata --input {{input.fwd}} --input {{input.rev}} --reference-db {{input.db}} --output {} --output-prefix {{wildcards.sample}}_kneaddata".format(kneadfolder))
 
-rule kneaddata_gzip_foward:
-    input: dynamic(expand(os.path.join(kneadfolder, "{sample}_{{filter_type}}_1.fastq"), sample = samples))
-    output: dynamic(expand(os.path.join(kneadfolder, "{sample}_{{filter_type}}_1.fastq.gz"), sample = samples))
+rule kneaddata_gzip:
+    input:
+        fwd = dynamic(os.path.join(kneadfolder, "{sample}_kneaddata{{filter_type}}.fastq")),
+        rev = dynamic(os.path.join(kneadfolder, "{sample}_kneaddata{{filter_type}}.fastq"))
+    output:
+        fwd = dynamic(os.path.join(kneadfolder, "{sample}_kneaddata{{filter_type}}.fastq.gz")),
+        rev = dynamic(os.path.join(kneadfolder, "{sample}_kneaddata{{filter_type}}.fastq.gz"))
     run:
-        shell("gzip {input}")
+         shell("gzip {input.fwd}")
+         shell("gzip {input.rev}")
 
-rule kneaddata_gzip_reverse:
-    input: dynamic(expand(os.path.join(kneadfolder, "{sample}_{{filter_type}}_2.fastq"), sample = samples))
-    output: dynamic(expand(os.path.join(kneadfolder, "{sample}_{{filter_type}}_2.fastq.gz"), sample = samples))
-    run:
-        shell("gzip {input}")
 rule kneaddata_counts:
     input:
         fwd = dynamic(expand(os.path.join(kneadfolder, "{sample}_{{filter_type}}_1.fastq"), sample = samples)),
