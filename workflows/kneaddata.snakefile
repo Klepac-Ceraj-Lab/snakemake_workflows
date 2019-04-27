@@ -16,18 +16,21 @@ rule kneaddata:
         rev = os.path.join(input_folder, "{sample}_2.fastq.gz"),
         db = config["databases"]["human_sequences"]
     output:
-        fwd = temp(dynamic(expand(os.path.join(kneadfolder, "{sample}_{{filter_type}}_1.fastq"), sample = samples))),
-        rev = temp(dynamic(expand(os.path.join(kneadfolder, "{sample}_{{filter_type}}_2.fastq"), sample = samples)))
+        fwd = temp(expand(os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq"), sample=samples)),
+        rev = temp(expand(os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq"), sample=samples))
     run:
         shell("kneaddata --input {{input.fwd}} --input {{input.rev}} --reference-db {{input.db}} --output {} --output-prefix {{wildcards.sample}}_kneaddata".format(kneadfolder))
 
 rule kneaddata_gzip:
     input:
-        temp(dynamic(expand(os.path.join(kneadfolder, "{sample}_kneaddata{{filter_type}}.fastq"), sample=samples)))
+        fwd = expand(os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq"), sample=samples),
+        rev = expand(os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq"), sample=samples)
     output:
-        dynamic(expand(os.path.join(kneadfolder, "{sample}_kneaddata{{filter_type}}.fastq.gz"), sample=samples))
+        fwd = expand(os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq.gz"), sample=samples),
+        rev = expand(os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq.gz"), sample=samples)
     run:
-         shell("gzip {input}")
+         for f in glob.glob(os.path.join(kneadfolder, "{wildcards.sample}*")):
+             shell("gzip -v {}".format(f))
 
 rule kneaddata_counts:
     input:

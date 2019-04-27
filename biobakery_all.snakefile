@@ -1,6 +1,6 @@
 # set options with "--config "
 
-import os
+import os, glob
 
 configfile: "config.yaml"
 
