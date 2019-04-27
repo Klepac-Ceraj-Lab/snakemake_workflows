@@ -8,6 +8,10 @@ kneaddata:
     processors: 8
     time: "0-08:00" # 8 hours
 
+kneaddata_gzip:
+    processors: 1
+    time: "00:30"
+
 metaphlan2:
     processors: 8
     time: "0-04:00" # 4 hours
