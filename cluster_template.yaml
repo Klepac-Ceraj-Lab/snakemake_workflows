@@ -1,15 +1,18 @@
 __default__:
-    processors: 8 # for -n arg
+    processors: 1 # for -n arg
     nodes: 1 # for -N arg, makes sure all processors are on same node
-    time: "0-00:10" # for -t, 10 min
+    time: "0-00:15" # for -t, 15 min
     memory: 8000 # --mem, 8 Gb
 
 kneaddata:
+    processors: 8
     time: "0-08:00" # 8 hours
 
 metaphlan2:
+    processors: 8
     time: "0-04:00" # 4 hours
 
 humann2:
+    processors: 8
     memory: 24000 # 24 Gb
     time: "12:00" # 12 hours
