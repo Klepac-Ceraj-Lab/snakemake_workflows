@@ -36,13 +36,6 @@ rule humann2_renorm_paths:
     run: shell("humann2_renorm_table -i {input} -o {output} -u relab")
 
 
-# rule humann2_rename_gf:
-#     input: os.path.join(humannfolder, "main", "{samples}_genefamilies.tsv")
-#     output: os.path.join(humannfolder, "main", "{samples}_genefamilies_names.tsv"),
-#     run:
-#         shell("humann2_rename_table --input {input} --output {output} --names uniref90")
-
-
 
 ###############
 # All samples #
@@ -79,11 +72,25 @@ rule humann2_merge_paths_relab:
     run: shell("humann2_join_tables -i {} -o {{output}} --file_name pathabundance_relab".format(os.path.join(humannfolder, "relab")))
 
 
+rule humann2_rename_gf:
+    input: os.path.join(humannfolder, "merged", "genefamilies.tsv")
+    output: os.path.join(humannfolder, "names", "genefamilies_names.tsv"),
+    run:
+        shell("humann2_rename_table --input {input} --output {output} --names uniref90")
+
+rule humann2_rename_ecs:
+    input: os.path.join(humannfolder, "regroup", "ecs.tsv")
+    output: os.path.join(humannfolder, "names", "ecs_names.tsv"),
+    run:
+        shell("humann2_rename_table --input {input} --output {output} --names ec")
+
 rule humann2_report:
     input:
         gf = os.path.join(humannfolder, "merged", "genefamilies_relab.tsv"),
         path = os.path.join(humannfolder, "merged", "pathabundance_relab.tsv"),
         ec = os.path.join(humannfolder, "merged", "ecs_relab.tsv")
+        gf_names = os.path.join(humannfolder, "names", "genefamilies_names.tsv"),
+        ec_names = os.path.join(humannfolder, "names", "ecs_names.tsv")
     output:
         os.path.join(humannfolder, "humann2_report.html")
     run:
