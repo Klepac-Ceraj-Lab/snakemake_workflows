@@ -19,6 +19,7 @@ samples = list(set(samples))
 samples.sort()
 
 include: "workflows/humann2.snakefile"
+include: "workflows/metaphlan2.snakefile"
 
 rule all:
     input:

@@ -4,15 +4,14 @@
 
 rule humann2:
     input:
-        fwd = temp(os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq")),
-        rev = temp(os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq"))
+        catseq = os.path.join(kneadfolder, "{sample}_merged.fastq"),
         tax_profile = os.path.join(metaphlanfolder, "main", "{sample}_profile.tsv")
     output:
         samples = os.path.join(humannfolder, "main", "{sample}_genefamilies.tsv"),
         path = os.path.join(humannfolder, "main", "{sample}_pathabundance.tsv")
     run:
         # TODO: get threads from settings
-        shell("humann2 --input {{input.fwd}} {{input.rev}} --output {} --taxonomic-profile {{input.tax_profile}} --threads 8 --remove-temp-output".format(
+        shell("humann2 --input {{input.catseq}} --output {} --taxonomic-profile {{input.tax_profile}} --threads 8 --remove-temp-output".format(
             os.path.join(humannfolder, "main"))
 
 
