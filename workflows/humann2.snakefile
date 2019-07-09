@@ -4,7 +4,7 @@
 
 rule humann2:
     input:
-        catseq = os.path.join(kneadfolder, "{sample}_merged.fastq"),
+        catseq = os.path.join(kneadfolder, "{sample}_merged.fastq.gz"),
         tax_profile = os.path.join(metaphlanfolder, "main", "{sample}_profile.tsv")
     output:
         samples = os.path.join(humannfolder, "main", "{sample}_genefamilies.tsv"),
@@ -12,7 +12,7 @@ rule humann2:
     run:
         # TODO: get threads from settings
         shell("humann2 --input {{input.catseq}} --output {} --taxonomic-profile {{input.tax_profile}} --threads 8 --remove-temp-output".format(
-            os.path.join(humannfolder, "main"))
+            os.path.join(humannfolder, "main")))
 
 
 rule humann2_regroup_ecs:
@@ -79,7 +79,7 @@ rule humann2_rename_gf:
         shell("humann2_rename_table --input {input} --output {output} --names uniref90")
 
 rule humann2_rename_ecs:
-    input: os.path.join(humannfolder, "regroup", "ecs.tsv")
+    input: os.path.join(humannfolder, "merged", "ecs.tsv")
     output: os.path.join(humannfolder, "names", "ecs_names.tsv"),
     run:
         shell("humann2_rename_table --input {input} --output {output} --names ec")
@@ -88,7 +88,7 @@ rule humann2_report:
     input:
         gf = os.path.join(humannfolder, "merged", "genefamilies_relab.tsv"),
         path = os.path.join(humannfolder, "merged", "pathabundance_relab.tsv"),
-        ec = os.path.join(humannfolder, "merged", "ecs_relab.tsv")
+        ec = os.path.join(humannfolder, "merged", "ecs_relab.tsv"),
         gf_names = os.path.join(humannfolder, "names", "genefamilies_names.tsv"),
         ec_names = os.path.join(humannfolder, "names", "ecs_names.tsv")
     output:
