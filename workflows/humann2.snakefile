@@ -2,6 +2,15 @@
 # Per Sample #
 ##############
 
+rule humann2_cat:
+    input:
+        fwd = os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq.gz"),
+        rev = os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq.gz"),
+    output: os.path.join(kneadfolder, "{sample}_merged.fastq.gz")
+    run:
+        shell("cat {input} > {output}")
+
+
 rule humann2:
     input:
         catseq = os.path.join(kneadfolder, "{sample}_merged.fastq.gz"),

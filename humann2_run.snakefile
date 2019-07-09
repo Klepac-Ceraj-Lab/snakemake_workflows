@@ -17,7 +17,6 @@ humannfolder = os.path.join(output_folder, "humann2")
 samples = glob_wildcards(os.path.join(metaphlanfolder, "main", "{sample}_profile.tsv"))
 
 include: "workflows/humann2.snakefile"
-include: "workflows/metaphlan2.snakefile"
 
 rule all:
     input:
