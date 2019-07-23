@@ -19,11 +19,11 @@ rule kneaddata:
     run:
         shell("kneaddata --input {{input.fwd}} --input {{input.rev}} --reference-db {{input.db}} --output {} --output-prefix {{wildcards.sample}}_kneaddata".format(kneadfolder))
 
-rule kneaddata_cat_result:
-    input: expand(os.path.join(kneadfolder, "{{sample}}_kneaddata_paired_{identifier}.fastq"), identifier=[1,2])
-    output: os.path.join(kneadfolder, "{sample}.fastq")
-    run:
-        shell("cat {input} > {output}")
+# rule kneaddata_cat_result:
+#     input: expand(os.path.join(kneadfolder, "{{sample}}_kneaddata_paired_{identifier}.fastq"), identifier=[1,2])
+#     output: os.path.join(kneadfolder, "{sample}.fastq")
+#     run:
+#         shell("cat {input} > {output}")
 
 # rule kneaddata_gzip:
 #     input:
@@ -48,7 +48,7 @@ rule kneaddata_counts:
 rule kneaddata_report:
     input:
         counts = os.path.join(kneadfolder, "kneaddata_read_counts.txt"),
-        merged_fastqs = expand(os.path.join(kneadfolder, "{sample}.fastq"), sample=samples)
+        # merged_fastqs = expand(os.path.join(kneadfolder, "{sample}.fastq"), sample=samples)
     output:
         os.path.join(kneadfolder, "kneaddata_report.html")
     run:
