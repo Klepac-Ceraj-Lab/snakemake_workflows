@@ -15,12 +15,12 @@ rule kneaddata:
         fwd = os.path.join(input_folder, "{sample}_1.fastq.gz"),
         rev = os.path.join(input_folder, "{sample}_2.fastq.gz"),
         db = config["databases"]["human_sequences"]
-    output: expand(os.path.join(input_folder, "{{sample}}_kneaddata_paired_{identifier}.fastq"), identifier=[1,2])
+    output: expand(os.path.join(kneadfolder, "{{sample}}_kneaddata_paired_{identifier}.fastq"), identifier=[1,2])
     run:
         shell("kneaddata --input {{input.fwd}} --input {{input.rev}} --reference-db {{input.db}} --output {} --output-prefix {{wildcards.sample}}_kneaddata".format(kneadfolder))
 
 rule kneaddata_cat_result:
-    input: expand(os.path.join(input_folder, "{{sample}}_kneaddata_paired_{identifier}.fastq"), identifier=[1,2])
+    input: expand(os.path.join(kneadfolder, "{{sample}}_kneaddata_paired_{identifier}.fastq"), identifier=[1,2])
     output: os.path.join(kneadfolder, "{sample}.fastq")
     run:
         shell("cat {input} > {output}")
