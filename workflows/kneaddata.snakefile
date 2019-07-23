@@ -22,12 +22,10 @@ rule kneaddata:
         shell("kneaddata --input {{input.fwd}} --input {{input.rev}} --reference-db {{input.db}} --output {} --output-prefix {{wildcards.sample}}_kneaddata".format(kneadfolder))
 
 rule kneaddata_cat_result:
-    input:
-        fwd = os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq"),
-        rev = os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq")
+    input: expand(os.path.join(input_folder, "{{sample}}_kneaddata_paired_{identifier}.fastq"), identifier=[1,2])
     output: os.path.join(kneadfolder, "{sample}.fastq")
     run:
-        shell("cat {input.fwd} {input.rev} > {output}")
+        shell("cat {input} > {output}")
 
 # rule kneaddata_gzip:
 #     input:
