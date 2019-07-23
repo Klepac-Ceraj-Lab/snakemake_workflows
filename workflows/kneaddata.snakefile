@@ -37,7 +37,7 @@ rule kneaddata:
 #              shell("gzip -v {}".format(f))
 #
 rule kneaddata_counts:
-    input: expand(os.path.join(kneadfolder, "{{sample}}_kneaddata_paired_{identifier}.fastq"), identifier=[1,2])
+    input: expand(os.path.join(kneadfolder, "{sample}_kneaddata_paired_{identifier}.fastq"), sample=samples, identifier=[1,2])
     output:
         os.path.join(kneadfolder, "kneaddata_read_counts.txt")
     shell:
