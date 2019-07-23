@@ -9,25 +9,20 @@ rule metaphlan2:
 
 
 rule metaphlan2_merge:
-    input:
-        expand(os.path.join(metaphlanfolder, "main", "{sample}_profile.tsv"), sample = samples)
-    output:
-        os.path.join(metaphlanfolder, "merged", "merged_abundance_table.tsv")
+    input: expand(os.path.join(metaphlanfolder, "main", "{sample}_profile.tsv"), sample = samples)
+    output: os.path.join(metaphlanfolder, "merged", "merged_abundance_table.tsv")
     run:
         shell("merge_metaphlan_tables.py {input} > {output}")
 
-rule metaphlan2_bz2:
-    input: os.path.join(metaphlanfolder, "main", "{sample}.sam")
-    output: os.path.join(metaphlanfolder, "main", "{sample}.sam.bz2")
-    run:
-        shell("bzip2 {input}")
-
+# rule metaphlan2_bz2:
+#     input: os.path.join(metaphlanfolder, "main", "{sample}.sam")
+#     output: os.path.join(metaphlanfolder, "main", "{sample}.sam.bz2")
+#     run:
+#         shell("bzip2 {input}")
+#
 rule metaphlan2_report:
-    input:
-        abundance_table = os.path.join(metaphlanfolder, "merged", "merged_abundance_table.tsv"),
-        sams = expand(os.path.join(metaphlanfolder, "main", "{sample}.sam.bz2"), sample = samples)
-    output:
-        os.path.join(metaphlanfolder, "metaphlan2_report.html")
+    input: os.path.join(metaphlanfolder, "merged", "merged_abundance_table.tsv")
+    output: os.path.join(metaphlanfolder, "metaphlan2_report.html")
     run:
         from snakemake.utils import report
         report("""
