@@ -2,15 +2,6 @@
 # Per Sample #
 ##############
 
-rule humann2_cat:
-    input:
-        fwd = os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq.gz"),
-        rev = os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq.gz"),
-    output: temp(os.path.join(kneadfolder, "{sample}.fastq.gz"))
-    run:
-        shell("cat {input} > {output}")
-
-
 rule humann2:
     input:
         catseq = os.path.join(kneadfolder, "{sample}.fastq.gz"),
@@ -18,9 +9,10 @@ rule humann2:
     output:
         samples = os.path.join(humannfolder, "main", "{sample}_genefamilies.tsv"),
         path = os.path.join(humannfolder, "main", "{sample}_pathabundance.tsv")
+    threads: 16
     run:
         # TODO: get threads from settings
-        shell("humann2 --input {{input.catseq}} --output {} --taxonomic-profile {{input.tax_profile}} --threads 8 --remove-temp-output".format(
+        shell("humann2 --input {{input.catseq}} --output {} --taxonomic-profile {{input.tax_profile}} --threads {threads} --remove-temp-output".format(
             os.path.join(humannfolder, "main")))
 
 

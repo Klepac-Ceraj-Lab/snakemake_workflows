@@ -10,13 +10,13 @@ kneaddata:
 
 kneaddata_gzip:
     processors: 1
-    time: "00:30"
+    time: "0-00:30"
 
 metaphlan2:
     processors: 8
     time: "0-04:00" # 4 hours
 
 humann2:
-    processors: 8
+    processors: 16
     memory: 24000 # 24 Gb
-    time: "12:00" # 12 hours
+    time: "0-12:00" # 12 hours
