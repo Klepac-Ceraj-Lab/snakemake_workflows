@@ -4,7 +4,7 @@
 
 rule humann2:
     input:
-        catseq = os.path.join(kneadfolder, "{sample}.fastq.gz"),
+        catseq = os.path.join(kneadfolder, "{sample}.fastq"),
         tax_profile = os.path.join(metaphlanfolder, "main", "{sample}_profile.tsv")
     output:
         samples = os.path.join(humannfolder, "main", "{sample}_genefamilies.tsv"),

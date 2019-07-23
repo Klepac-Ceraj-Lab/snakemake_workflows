@@ -21,11 +21,11 @@ rule kneaddata:
     run:
         shell("kneaddata --input {{input.fwd}} --input {{input.rev}} --reference-db {{input.db}} --output {} --output-prefix {{wildcards.sample}}_kneaddata".format(kneadfolder))
 
-rule kneaddata_cat:
+rule kneaddata_cat_result:
     input:
-        fwd = os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq.gz"),
-        rev = os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq.gz"),
-    output: temp(os.path.join(kneadfolder, "{sample}.fastq.gz"))
+        fwd = os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq"),
+        rev = os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq"),
+    output: temp(os.path.join(kneadfolder, "{sample}.fastq"))
     run:
         shell("cat {input} > {output}")
 
