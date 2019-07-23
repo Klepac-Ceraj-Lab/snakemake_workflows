@@ -52,6 +52,7 @@ rule kneaddata_counts:
 rule kneaddata_report:
     input:
         counts = os.path.join(kneadfolder, "kneaddata_read_counts.txt"),
+        merged_fastqs = expand(os.path.join(kneadfolder, "{sample}.fastq"), sample=samples)
     output:
         os.path.join(kneadfolder, "kneaddata_report.html")
     run:
