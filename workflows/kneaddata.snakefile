@@ -25,7 +25,7 @@ rule kneaddata_cat_result:
     input:
         fwd = os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq"),
         rev = os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq")
-    output: temp(os.path.join(kneadfolder, "{sample}.fastq"))
+    output: os.path.join(kneadfolder, "{sample}.fastq")
     run:
         shell("cat {input} > {output}")
 
