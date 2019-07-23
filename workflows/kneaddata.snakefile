@@ -27,7 +27,7 @@ rule kneaddata_cat_result:
         rev = os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq")
     output: os.path.join(kneadfolder, "{sample}.fastq")
     run:
-        shell("cat {input} > {output}")
+        shell("cat {input.fwd} {input.rev} > {output}")
 
 # rule kneaddata_gzip:
 #     input:
