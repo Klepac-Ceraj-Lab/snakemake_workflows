@@ -21,6 +21,8 @@ samples.sort()
 lanes = list(set(lanes))
 lanes.sort()
 
+print(samples)
+
 kneadfolder = os.path.join(output_folder, "kneaddata")
 metaphlanfolder = os.path.join(output_folder, "metaphlan2")
 humannfolder = os.path.join(output_folder, "humann2")

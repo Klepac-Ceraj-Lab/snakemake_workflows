@@ -49,18 +49,6 @@ rule kneaddata_counts:
     shell:
         "kneaddata_read_count_table --input {} --output {{output}}".format(kneadfolder)
 
-rule kneaddata_gzip_foward:
-    input: dynamic(expand(os.path.join(kneadfolder, "{sample}_{{filter_type}}_1.fastq"), sample = samples))
-    output: dynamic(expand(os.path.join(kneadfolder, "{sample}_{{filter_type}}_1.fastq.gz"), sample = samples))
-    run:
-        shell("gzip {input}")
-
-rule kneaddata_gzip_reverse:
-    input: dynamic(expand(os.path.join(kneadfolder, "{sample}_{{filter_type}}_2.fastq"), sample = samples))
-    output: dynamic(expand(os.path.join(kneadfolder, "{sample}_{{filter_type}}_2.fastq.gz"), sample = samples))
-    run:
-        shell("gzip {input}")
-
 rule kneaddata_report:
     input:
         counts = os.path.join(kneadfolder, "kneaddata_read_counts.txt"),
