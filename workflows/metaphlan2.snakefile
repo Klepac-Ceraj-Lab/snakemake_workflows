@@ -30,12 +30,6 @@ rule metaphlan2_bz2:
     run:
         shell("bzip2 {input}")
 
-rule metaphlan2_bz2:
-    input: os.path.join(metaphlanfolder, "main", "{sample}.sam")
-    output: os.path.join(metaphlanfolder, "main", "{sample}.sam.bz2")
-    run:
-        shell("bzip2 {input}")
-
 rule metaphlan2_report:
     input:
         abundance_table = os.path.join(metaphlanfolder, "merged", "merged_abundance_table.tsv"),

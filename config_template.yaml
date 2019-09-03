@@ -6,8 +6,8 @@
 # workflow variables
 #-------------------
 ---
-input_folder: ""
-output_folder: ""
+input_folder: "rawfastq"
+output_folder: "output"
 run: all
 
 #----------------------
