@@ -23,6 +23,6 @@ executables:
 
 # these are the paths on engaging
 databases:
-    human_sequences: /nobackup1/vklepacc/databases/Homo_sapiens_bowtie
-    uniref: /nobackup1/vklepacc/databases/uniref/
-    chocophlan: /nobackup1/vklepacc/databases/chocophlan
+    human_sequences: /pool001/vklepacc/databases/Homo_sapiens_bowtie
+    uniref: /pool001/vklepacc/humann_databases_v3/uniref/
+    chocophlan: /pool001/vklepacc/humann_databases_v3/chocophlan
