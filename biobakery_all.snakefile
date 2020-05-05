@@ -21,12 +21,12 @@ lanes = list(set(lanes))
 lanes.sort()
 
 kneadfolder = os.path.join(output_folder, "kneaddata")
-metaphlanfolder = os.path.join(output_folder, "metaphlan2")
-humannfolder = os.path.join(output_folder, "humann2")
+metaphlanfolder = os.path.join(output_folder, "metaphlan")
+humannfolder = os.path.join(output_folder, "humann")
 
 include: "workflows/kneaddata.snakefile"
-include: "workflows/metaphlan2.snakefile"
-include: "workflows/humann2.snakefile"
+include: "workflows/metaphlan.snakefile"
+include: "workflows/humann.snakefile"
 
 rule all:
     input:
@@ -36,8 +36,8 @@ rule all:
 rule report:
     input:
         kneaddata = os.path.join(kneadfolder, "kneaddata_report.html"),
-        metaphlan2 = os.path.join(metaphlanfolder, "metaphlan2_report.html"),
-        humann2 = os.path.join(humannfolder, "humann2_report.html")
+        metaphlan = os.path.join(metaphlanfolder, "metaphlan_report.html"),
+        humann = os.path.join(humannfolder, "humann_report.html")
     output:
         os.path.join(output_folder, "report.html")
     run:

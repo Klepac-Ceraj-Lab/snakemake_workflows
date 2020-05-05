@@ -17,8 +17,8 @@ run: all
 # by default, assume these are in $PATH
 executables:
     kneaddata: kneaddata
-    metaphlan2: metaphlan2
-    humann2: humann2
+    metaphlan: metaphlan
+    humann: humann
     diamond: diamond
 
 # these are the paths on engaging
