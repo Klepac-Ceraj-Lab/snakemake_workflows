@@ -1,13 +1,3 @@
-# set options with "--config "
-
-import os, glob
-
-configfile: "config.yaml"
-
-include: "setup/directories.snakefile"
-include: "setup/echo_samples.snakefile"
-
-
 kneadfolder = os.path.join(output_folder, "kneaddata")
 include: "workflows/kneaddata.snakefile"
 
