@@ -4,28 +4,17 @@ import os, glob
 
 configfile: "config.yaml"
 
-input_folder = config["input_folder"]
-output_folder = config["output_folder"]
-log_folder = os.path.join(output_folder, "logs")
+include: "setup/directories.snakefile"
+include: "setup/echo_samples.snakefile"
 
-if not os.path.isdir(output_folder):
-    os.mkdir(output_folder)
-
-if not os.path.isdir(log_folder):
-    os.mkdir(log_folder)
-
-(samples, lanes) = glob_wildcards(os.path.join(input_folder, "{sample}_{lane,L\d+}_R1_001.fastq.gz"))
-samples = list(set(samples))
-samples.sort()
-lanes = list(set(lanes))
-lanes.sort()
 
 kneadfolder = os.path.join(output_folder, "kneaddata")
-metaphlanfolder = os.path.join(output_folder, "metaphlan")
-humannfolder = os.path.join(output_folder, "humann")
-
 include: "workflows/kneaddata.snakefile"
+
+metaphlanfolder = os.path.join(output_folder, "metaphlan")
 include: "workflows/metaphlan.snakefile"
+
+humannfolder = os.path.join(output_folder, "humann")
 include: "workflows/humann.snakefile"
 
 rule all:
