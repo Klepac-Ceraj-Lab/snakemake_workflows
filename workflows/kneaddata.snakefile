@@ -1,26 +1,45 @@
-rule kneaddata_cat1:
-    input: expand(os.path.join(input_folder, "{{sample}}_{lane}_R1_001.fastq.gz"), lane=lanes)
-    output: os.path.join(input_folder, "{sample}_1.fastq.gz")
-    run:
-        shell("cat {input} > {output}")
+if config["reads"] == "paired":
+    rule kneaddata_cat1:
+        input: expand(os.path.join(input_folder, "{{sample}}_{lane}_R1_001.fastq.gz"), lane=lanes)
+        output: os.path.join(input_folder, "{sample}_1.fastq.gz")
+        run:
+            shell("cat {input} > {output}")
+    rule kneaddata_cat2:
+        input: expand(os.path.join(input_folder, "{{sample}}_{lane}_R2_001.fastq.gz"), lane=lanes)
+        output: os.path.join(input_folder, "{sample}_2.fastq.gz")
+        run:
+            shell("cat {input} > {output}")
+elif config["reads"] == "single":
+    rule kneaddata_cat:
+        input: os.path.join(input_folder, "{sample}.fastq.gz"), lane=lanes)
+        output: os.path.join(input_folder, "{sample}.fastq.gz")
+        run:
+            shell("cat {input} > {output}")
 
-rule kneaddata_cat2:
-    input: expand(os.path.join(input_folder, "{{sample}}_{lane}_R2_001.fastq.gz"), lane=lanes)
-    output: os.path.join(input_folder, "{sample}_2.fastq.gz")
-    run:
-        shell("cat {input} > {output}")
 
-rule kneaddata:
-    input:
-        fwd = os.path.join(input_folder, "{sample}_1.fastq.gz"),
-        rev = os.path.join(input_folder, "{sample}_2.fastq.gz"),
-        db = config["databases"]["human_sequences"]
-    output:
-        fwd = os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq"),
-        rev = os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq"),
-        log = os.path.join(kneadfolder, "{sample}_kneaddata.log")
-    run:
-        shell("kneaddata --input {{input.fwd}} --input {{input.rev}} --reference-db {{input.db}} --output {} --output-prefix {{wildcards.sample}}_kneaddata".format(kneadfolder))
+
+if config["reads"] == "paired":
+    rule kneaddata:
+        input:
+            fwd = os.path.join(input_folder, "{sample}_1.fastq.gz"),
+            rev = os.path.join(input_folder, "{sample}_2.fastq.gz"),
+            db = config["databases"]["human_sequences"]
+        output:
+            fwd = os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq"),
+            rev = os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq"),
+            log = os.path.join(kneadfolder, "{sample}_kneaddata.log")
+        run:
+            shell("kneaddata --input {{input.fwd}} --input {{input.rev}} --reference-db {{input.db}} --output {} --output-prefix {{wildcards.sample}}_kneaddata".format(kneadfolder))
+elif config["reads"] == "single":
+    rule kneaddata:
+        input:
+            seq = os.path.join(input_folder, "{sample}.fastq.gz"),
+            db = config["databases"]["human_sequences"]
+        output:
+            seq = os.path.join(kneadfolder, "{sample}_kneaddata.fastq"),
+            log = os.path.join(kneadfolder, "{sample}_kneaddata.log")
+        run:
+            shell("kneaddata --input {{input.seq}} --reference-db {{input.db}} --output {} --output-prefix {{wildcards.sample}}_kneaddata".format(kneadfolder))
 
 rule kneaddata_counts:
     input: expand(os.path.join(kneadfolder, "{sample}_kneaddata.log"), sample = samples)
