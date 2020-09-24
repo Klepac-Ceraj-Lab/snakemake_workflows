@@ -3,7 +3,7 @@
 
 rule strainphlan_markers:
     input:
-        expand("/Users/laurentso/Desktop/repos/echo/workflow/testing/metaphlan2/main/{samples}.sam.bz2", samples = SAMPLES)
+        expand("/Users/laurentso/Desktop/repos/echo/workflow/testing/metaphlan/main/{samples}.sam.bz2", samples = SAMPLES)
     output:
         expand("testing/strainphlan/main/{samples}.markers", samples = SAMPLES)
     run:
