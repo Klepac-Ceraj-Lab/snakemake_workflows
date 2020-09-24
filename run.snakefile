@@ -1,3 +1,4 @@
+# set options with "--config "
 import os, glob
 
 configfile: "config.yaml"
@@ -13,3 +14,9 @@ elif config["run"] == "metaphlan":
     include: "run_metaphlan.snakefile"
 else:
     raise ValueError("Unknown workflow: {}".format(config["run"]))
+
+
+rule all:
+    input:
+        os.path.join(output_folder, "report.html")
+

@@ -1,13 +1,5 @@
-kneadfolder = os.path.join(output_folder, "kneaddata")
 include: "workflows/kneaddata.snakefile"
-
-metaphlanfolder = os.path.join(output_folder, "metaphlan")
 include: "workflows/metaphlan.snakefile"
-
-rule all:
-    input:
-        os.path.join(output_folder, "report.html")
-
 
 rule report:
     input:
