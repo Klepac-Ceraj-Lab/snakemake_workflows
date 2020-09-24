@@ -1,3 +1,5 @@
+humannfolder = os.path.join(output_folder, "humann")
+
 ##############
 # Per Sample #
 ##############

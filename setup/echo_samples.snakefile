@@ -1,0 +1,5 @@
+(samples, lanes) = glob_wildcards(os.path.join(input_folder, "{sample}_{lane,L\d+}_R1_001.fastq.gz"))
+samples = list(set(samples))
+samples.sort()
+lanes = list(set(lanes))
+lanes.sort()
