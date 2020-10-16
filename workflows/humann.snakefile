@@ -6,7 +6,7 @@ humannfolder = os.path.join(output_folder, "humann")
 
 rule humann:
     input:
-        seq = os.path.join(kneadfolder, "{sample}_merged.fastq"),
+        seq = os.path.join(kneadfolder, "{sample}_kneaddata.fastq"),
         tax = os.path.join(metaphlanfolder, "{sample}_profile.tsv")
     output:
         samples = os.path.join(humannfolder, "main", "{sample}_genefamilies.tsv"),
