@@ -16,15 +16,16 @@ samples: setup/echo_samples.snakefile
 # Environment variables
 #----------------------
 
-# by default, assume these are in $PATH
-executables:
-    kneaddata: kneaddata
-    metaphlan: metaphlan
-    humann: humann
-    diamond: diamond
+# # by default, assume these are in $PATH
+# # These are not yet used
+# executables:
+#     kneaddata: kneaddata
+#     metaphlan: metaphlan
+#     humann: humann
+#     diamond: diamond
 
-# these are the paths on engaging
+# these are the paths on your cluster
 databases:
     human_sequences: /pool001/vklepacc/databases/Homo_sapiens_bowtie
-    uniref: /pool001/vklepacc/humann_databases_v3/uniref/
     chocophlan: /pool001/vklepacc/humann_databases_v3/chocophlan
+    # Set with humann_config --> # uniref: /pool001/vklepacc/humann_databases_v3/uniref/
