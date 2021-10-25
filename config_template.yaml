@@ -26,6 +26,8 @@ samples: setup/echo_samples.snakefile
 
 # these are the paths on your cluster
 databases:
-    human_sequences: /pool001/vklepacc/databases/Homo_sapiens_bowtie
-    chocophlan: /pool001/vklepacc/humann_databases_v3/chocophlan
-    # Set with humann_config --> # uniref: /pool001/vklepacc/humann_databases_v3/uniref/
+    human_sequences: /pool001/vklepacc/databases/kneaddata
+    chocophlan: /pool001/vklepacc/databases/humann/chocophlan
+    uniref: /pool001/vklepacc/databases/humann/uniref/
+    utility_mapping: /pool001/vklepacc/databases/humann/utility_mapping
+    bowtie2db: /pool001/vklepacc/databases/metaphlan

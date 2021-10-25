@@ -19,7 +19,7 @@ rule kneaddata:
         rev = os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq"),
         log = os.path.join(kneadfolder, "{sample}_kneaddata.log")
     run:
-        shell("kneaddata --input {{input.fwd}} --input {{input.rev}} --reference-db {{input.db}} --output {} --output-prefix {{wildcards.sample}}_kneaddata".format(kneadfolder))
+        shell("kneaddata --input {{input.fwd}} --input {{input.rev}} --reference-db {{input.db}} --output {} --output-prefix {{wildcards.sample}}_kneaddata --trimmomatic /home/vklepacc/miniconda3/share/trimmomatic-0.39-2/".format(kneadfolder))
 
 rule metaphlan_cat:
     input:

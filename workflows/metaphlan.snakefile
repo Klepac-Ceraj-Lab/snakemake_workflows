@@ -7,13 +7,13 @@ rule metaphlan:
         bowtie = os.path.join(metaphlanfolder, "{sample}_bowtie2.tsv"),
         sam = temp(os.path.join(metaphlanfolder, "{sample}.sam"))
     run:
-        shell("metaphlan {input} {output.profile} --bowtie2out {output.bowtie} --samout {output.sam} --input_type fastq --nproc {cluster['processors']} --bowtie2db {config['chocophlan']}") # TODO: get nproc from settings
+        shell("metaphlan {input} {output.profile} --bowtie2out {output.bowtie} --samout {output.sam} --input_type fastq --nproc {cluster['processors']} --bowtie2db {config['databases']['bowtie2db']}")
 
 # rule metaphlan_bz2:
 #     input: os.path.join(metaphlanfolder, "{sample}.sam")
 #     output: os.path.join(metaphlanfolder, "{sample}.sam.bz2")
 #     run:
-#         shell("bzip2 {input}")
+#         shell("bzip2 -k {input}")
 
 rule metaphlan_report:
     input:
