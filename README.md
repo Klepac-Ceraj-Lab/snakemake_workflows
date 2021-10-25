@@ -4,6 +4,27 @@ by
   Lauren Tso  
   Kevin Bonham, PhD
 
+
+## Initial setup
+
+```sh
+$ poetry install
+$ conda install -c bioconda trimmomatic trf
+```
+
+Use `poetry shell` with this directory as the working directory every time you're ready to use.
+
+
+### bioBakery databases
+
+```sh
+$ metaphlan --install --bowtie2db $METAPHLAN_DATABASE_DIR # be sure to set this in `config.yaml` as well
+$ kneaddata_database --download human_genome bowtie2 $KNEADDATA_DATABASE_DIR
+$ humann_databases --download uniref uniref90_diamond $HUMANN_DATABASE_DIR
+$ humann_databases --download chocophlan full $HUMANN_DATABASE_DIR
+$ humann_databases --download utility_mapping full $HUMANN_DATABASE_DIR
+```
+
 ## Usage
 
 1. Make a copy of `config_template.yaml` called `config.yaml`.
