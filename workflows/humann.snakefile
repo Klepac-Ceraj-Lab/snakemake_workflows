@@ -12,7 +12,7 @@ rule humann:
         samples = os.path.join(humannfolder, "main", "{sample}_genefamilies.tsv"),
         path = os.path.join(humannfolder, "main", "{sample}_pathabundance.tsv")
     run:
-        shell("humann --input {{input.seq}} --taxonomic-profile {{input.tax}} --output {} --threads {cluster['processors']} --remove-temp-output --search-mode uniref90 --output-basename {{wildcards.sample}}".format(
+        shell("humann --input {{input.seq}} --taxonomic-profile {{input.tax}} --output {} --threads 16 --remove-temp-output --search-mode uniref90 --output-basename {{wildcards.sample}}".format(
             os.path.join(humannfolder, "main")))
 
 
