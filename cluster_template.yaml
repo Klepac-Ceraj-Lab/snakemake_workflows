@@ -17,6 +17,6 @@ metaphlan:
     time: "0-04:00" # 4 hours
 
 humann:
-    processors: 8
+    processors: 16
     memory: 24000 # 24 Gb
     time: "0-12:00" # 12 hours
