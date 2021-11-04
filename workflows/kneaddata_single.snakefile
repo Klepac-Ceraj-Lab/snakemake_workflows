@@ -9,7 +9,7 @@ rule kneaddata:
         seq = os.path.join(input_folder, "{sample}.fastq.gz"),
         db = config["databases"]["human_sequences"]
     output:
-        seq = os.path.join(kneadfolder, "{sample}_kneaddata.fastq"),
+        seq = temp(os.path.join(kneadfolder, "{sample}_kneaddata.fastq")),
         log = os.path.join(kneadfolder, "{sample}_kneaddata.log")
     run:
         shell("kneaddata --input {{input.seq}} --reference-db {{input.db}} --output {} --output-prefix {{wildcards.sample}}_kneaddata".format(kneadfolder))

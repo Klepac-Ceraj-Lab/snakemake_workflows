@@ -12,6 +12,8 @@ elif config["run"] == "kneaddata":
     include: "run_kneaddata.snakefile"
 elif config["run"] == "metaphlan":
     include: "run_metaphlan.snakefile"
+elif config["run"] == "cleanup":
+    include: "run_cleanup.smk"
 else:
     raise ValueError("Unknown workflow: {}".format(config["run"]))
 
