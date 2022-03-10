@@ -2,7 +2,7 @@ import os, glob
 
 configfile: "config.yaml"
 
-include: "setup/directories.snakefile"
+include: "setup/directories.smk"
 include: config["samples"]
 
 kneadfolder = os.path.join(output_folder, "kneaddata")

@@ -1,4 +1,4 @@
-include: "workflows/kneaddata.snakefile"
+include: "workflows/kneaddata.smk"
 
 rule report:
     input:

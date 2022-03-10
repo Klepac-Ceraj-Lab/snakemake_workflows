@@ -10,7 +10,7 @@ input_folder: "rawfastq"
 output_folder: "output"
 reads: paired # change to "single" if appropriate
 run: all # or: "kneaddata" "metaphlan" "humann"
-samples: setup/echo_samples.snakefile
+samples: setup/echo_samples.smk
 
 #----------------------
 # Environment variables

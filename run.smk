@@ -3,15 +3,15 @@ import os, glob
 
 configfile: "config.yaml"
 
-include: "setup/directories.snakefile"
+include: "setup/directories.smk"
 include: config["samples"]
 
 if config["run"] == "all":
-    include: "run_all.snakefile"
+    include: "run_all.smk"
 elif config["run"] == "kneaddata":
-    include: "run_kneaddata.snakefile"
+    include: "run_kneaddata.smk"
 elif config["run"] == "metaphlan":
-    include: "run_metaphlan.snakefile"
+    include: "run_metaphlan.smk"
 else:
     raise ValueError("Unknown workflow: {}".format(config["run"]))
 

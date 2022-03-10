@@ -1,5 +1,5 @@
-include: "workflows/kneaddata.snakefile"
-include: "workflows/metaphlan.snakefile"
+include: "workflows/kneaddata.smk"
+include: "workflows/metaphlan.smk"
 
 rule report:
     input:

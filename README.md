@@ -33,7 +33,7 @@ $ humann_databases --download utility_mapping full $HUMANN_DATABASE_DIR
 4. Run:
 
 ```sh
-$ snakemake -s /home/vklepacc/software/repos/snakemake_workflows/run.snakefile \
+$ snakemake -s /home/vklepacc/software/repos/snakemake_workflows/run.smk \
     --configfile config.yaml --cluster-config cluster.yaml \
     --cluster "sbatch -n {cluster.processors} -N 1 -t {cluster.time} --mem {cluster.memory} -o output/logs/{rule}-%j.out -e output/logs/{rule}-%j.err -p newnodes" \
     --jobs 16 --latency-wait 15
