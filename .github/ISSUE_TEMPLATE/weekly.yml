@@ -8,22 +8,14 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to fill out this bug report!
-  - type: input
-    id: contact
-    attributes:
-      label: Contact Details
-      description: How can we get in touch with you if we need more info?
-      placeholder: ex. email@example.com
-    validations:
-      required: false
+        Please fill out these forms as best you can
   - type: textarea
-    id: what-happened
+    id: last-week
     attributes:
-      label: What happened?
-      description: Also tell us, what did you expect to happen?
-      placeholder: Tell us what you see!
-      value: "A bug happened!"
+      label: What I accomplished last week
+      description: Link to relevant issues where appropriate
+      placeholder: Tell us what you did!
+      value: "- [x] Thing1\n- [x] Thing2"
     validations:
       required: true
   - type: dropdown
