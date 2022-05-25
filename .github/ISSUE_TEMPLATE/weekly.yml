@@ -17,40 +17,32 @@ body:
       placeholder: Tell us what you did!
       value: |
         - [x] Thing1
-        - [x] Thing2"
+        - [x] Thing2
     validations:
       required: true
-  - type: dropdown
-    id: version
-    attributes:
-      label: Version
-      description: What version of our software are you running?
-      options:
-        - 1.0.2 (Default)
-        - 1.0.3 (Edge)
-    validations:
-      required: true
-  - type: dropdown
-    id: browsers
-    attributes:
-      label: What browsers are you seeing the problem on?
-      multiple: true
-      options:
-        - Firefox
-        - Chrome
-        - Safari
-        - Microsoft Edge
   - type: textarea
-    id: logs
+    id: next-week
     attributes:
-      label: Relevant log output
-      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
-      render: shell
+      label: What I plan to do next week
+      description: If something bares tracking long-term, open issues or add tasks to project
+      placeholder: Tell us what you will do!
+      value: |
+        - [ ] Thing1
+        - [ ] Thing2
+    validations:
+      required: true
+  - type: textarea
+    id: struggles
+    attributes:
+      label: Is there anything that Kevin can help with
+      description: If something bares tracking long-term, open issues or add tasks to project
   - type: checkboxes
-    id: terms
+    id: accomplishments
     attributes:
-      label: Code of Conduct
-      description: By submitting this issue, you agree to follow our [Code of Conduct](https://example.com)
+      label: How did the last week go?
+      description: Check things that apply
       options:
-        - label: I agree to follow this project's Code of Conduct
-          required: true
+        - label: I accomplished all or most of my goals
+        - label: I used my time wisely
+        - label: I struggled with a problem, but solved it
+        - label: I ran into an issue I can't solve on my own
