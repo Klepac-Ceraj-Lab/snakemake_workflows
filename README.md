@@ -3,7 +3,7 @@
 by  
   Lauren Tso  
   Kevin Bonham, PhD
-
+  Deniz Uzun
 
 ## Initial setup
 
