@@ -48,3 +48,4 @@ body:
       label: Any barriers or things that Kevin can help with?
       description: If anything bears tracking over the long term, open issues or link to existing issues
       placeholder: Some barriers
+      value: barriers
