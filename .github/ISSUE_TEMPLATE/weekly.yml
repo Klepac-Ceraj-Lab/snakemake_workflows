@@ -1,7 +1,7 @@
 name: Weekly meetings
 description: Agenda for weekly meetings with Kevin
-title: "[Weekly]: "
-labels: ["weekly meeting"]
+title: "Weekly meeting for YYYY-MM-DD"
+labels: ["Weekly meeting"]
 assignees:
   - kescobo
 body:
