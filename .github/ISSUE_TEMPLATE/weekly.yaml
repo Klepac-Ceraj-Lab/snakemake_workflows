@@ -1,0 +1,50 @@
+name: Weekly meetings
+description: Agenda for weekly meetings with Kevin
+title: "[Weekly]: "
+labels: ["weekly meeting"]
+assignees:
+  - kescobo
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please fill these fields out as best you can
+  - type: textarea
+    id: last-week
+    attributes:
+      label: What I accomplished last week
+      description: Include links to previous issues, if applicable
+      placeholder: What happened last week?
+      value: |
+        - [x] Thing 1
+        - [x] Thing 2
+    validations:
+      required: true
+  - type: checkboxes
+    id: accomplishments
+    attributes:
+      label: Accomplishments and barriers
+      description: How did you do this week?
+      options:
+        - I used my time effectively
+        - I got stuck on a problem and couldn't solve it
+        - I completed what I intended to complete
+    validations:
+      required: false
+  - type: textarea
+    id: next-week
+    attributes:
+      label: What I plan to do this week
+      description: If anything bears tracking over the long term, open issues or link to existing issues
+      placeholder: What I plan to do this week
+      value: |
+        - [x] Thing 1
+        - [x] Thing 2
+    validations:
+      required: true
+  - type: textarea
+    id: barriers
+    attributes:
+      label: Any barriers or things that Kevin can help with?
+      description: If anything bears tracking over the long term, open issues or link to existing issues
+      placeholder: Some barriers
