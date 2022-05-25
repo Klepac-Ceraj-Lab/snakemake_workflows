@@ -15,7 +15,9 @@ body:
       label: What I accomplished last week
       description: Link to relevant issues where appropriate
       placeholder: Tell us what you did!
-      value: "- [x] Thing1\n- [x] Thing2"
+      value: |
+        - [x] Thing1
+        - [x] Thing2"
     validations:
       required: true
   - type: dropdown
