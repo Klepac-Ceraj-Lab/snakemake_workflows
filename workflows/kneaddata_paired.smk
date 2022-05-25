@@ -32,13 +32,13 @@ rule metaphlan_cat:
 
 rule kneaddata_counts:
     input: expand(os.path.join(kneadfolder, "{sample}_kneaddata.log"), sample = samples)
-    output: os.path.join(kneadfolder, "kneaddata_read_counts.txt")
+    output: os.path.join(kneadfolder, "kneaddata_read_counts.tsv")
     shell:
         "kneaddata_read_count_table --input {} --output {{output}}".format(kneadfolder)
 
 rule kneaddata_report:
     input:
-        counts = os.path.join(kneadfolder, "kneaddata_read_counts.txt"),
+        counts = os.path.join(kneadfolder, "kneaddata_read_counts.tsv"),
         fwd = expand(os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq"), sample = samples),
         rev = expand(os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq"), sample = samples)
     output:
