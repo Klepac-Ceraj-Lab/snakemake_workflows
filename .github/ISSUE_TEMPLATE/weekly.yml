@@ -15,9 +15,7 @@ body:
       label: What I accomplished last week
       description: Include links to previous issues, if applicable
       placeholder: What happened last week?
-      value: |
-        - [x] Thing 1
-        - [x] Thing 2
+      value: Test something
     validations:
       required: true
   - type: checkboxes
@@ -37,9 +35,7 @@ body:
       label: What I plan to do this week
       description: If anything bears tracking over the long term, open issues or link to existing issues
       placeholder: What I plan to do this week
-      value: |
-        - [x] Thing 1
-        - [x] Thing 2
+      value: Test something
     validations:
       required: true
   - type: textarea
