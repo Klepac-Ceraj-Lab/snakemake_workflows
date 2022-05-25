@@ -19,4 +19,3 @@ else:
 rule all:
     input:
         os.path.join(output_folder, "report.html")
-
