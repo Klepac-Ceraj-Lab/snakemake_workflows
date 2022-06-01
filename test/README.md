@@ -22,3 +22,22 @@
    - `humann`
    - `humann_regroup_table`
    - `huamnn_rename_table`
+
+## Run the snakemake workflow
+
+```sh
+$ snakemake -c2 -s $REPO_PATH/run.smk
+```
+
+where `$REPO_PATH` is the absolute or relative path to this repo.
+
+Optionally, include the `--debug-dag` option to get more info
+about how the rules are resolving.
+
+Another way to debug is to visualize the DAG by running:
+
+```
+$ snakemake -s $REPO_PATH/run.smk --forceall --dag | dot -Tpng > dag.png
+```
+
+![workflow DAG for test files](./dag.png)
