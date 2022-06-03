@@ -1,5 +1,5 @@
-input_folder = config["input_folder"]
-output_folder = config["output_folder"]
+input_folder = os.path.abspath(config["input_folder"])
+output_folder = os.path.abspath(config["output_folder"])
 log_folder = os.path.join(output_folder, "logs")
 
 if not os.path.isdir(output_folder):
