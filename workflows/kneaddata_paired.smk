@@ -22,10 +22,10 @@ rule kneaddata:
 
 rule compressdata:
     input: 
-        fwd= os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq")
+        fwd= os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq"),
         rev= os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq")
     output:
-        fwd= os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq.gz")
+        fwd= os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq.gz"),
         rev= os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq.gz")
     shell: "gzip -c {input} > {output}"
 
