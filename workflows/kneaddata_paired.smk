@@ -20,7 +20,7 @@ rule kneaddata:
     run:
         shell("kneaddata --input {{input.fwd}} --input {{input.rev}} --reference-db /hg37 --output {} --output-prefix {{wildcards.sample}}_kneaddata --trimmomatic /opt/conda/share/trimmomatic".format(kneadfolder))
 
-rule compressdata
+rule compressdata:
     input: 
         fwd= os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq")
         rev= os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq")
