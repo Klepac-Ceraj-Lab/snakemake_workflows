@@ -27,7 +27,8 @@ rule compressdata:
     output:
         fwd= os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq.gz"),
         rev= os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq.gz")
-    shell: "gzip -c {input} > {output}"
+     run: 
+        shell "gzip -c {input} > {output}"
 
 rule metaphlan_cat:
     input:
