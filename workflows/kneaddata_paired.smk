@@ -48,8 +48,8 @@ rule kneaddata_counts:
 rule kneaddata_report:
     input:
         counts = os.path.join(kneadfolder, "kneaddata_read_counts.tsv"),
-        fwd = expand(os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq"), sample = samples),
-        rev = expand(os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq"), sample = samples)
+        fwd = os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq.gz"),
+        rev = os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq.gz")
     output:
         os.path.join(kneadfolder, "kneaddata_report.html")
     run:
