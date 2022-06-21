@@ -36,6 +36,7 @@ rule compressdata2:
     run: 
         shell("gzip -c {input} > {output}")
 
+checkpoint further_compress
 
 rule metaphlan_cat:
     input:
