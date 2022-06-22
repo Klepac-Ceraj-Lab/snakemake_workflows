@@ -37,8 +37,8 @@ rule compressdata2:
         shell("gzip -c {input} > {output}")
 
 checkpoint further_compress:
-    input: os.path.join(kneadfolder, "{sample}.fastq")
-    output: os.path.join(kneadfolder, "{sample}.fastq.gz")
+    input: "{kneadfolder}/{sample}.fastq"
+    output: "{kneadfolder}/{sample}.fastq.gz"
     wildcard_constraints:
          sample ='[^(paired)][0-9a-zA-Z]*'
     run: shell("gzip {input} > {output}")
