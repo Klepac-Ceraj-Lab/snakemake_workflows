@@ -26,7 +26,7 @@ rule compressdata1:
     output:
         rev= os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq.gz")
     run: 
-        shell("gzip {input} > {output}")
+        shell("gzip -c {input} > {output}")
 
 rule compressdata2:
     input: 
@@ -34,11 +34,13 @@ rule compressdata2:
     output:
         rev= os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq.gz")
     run: 
-        shell("gzip {input} > {output}")
+        shell("gzip -c {input} > {output}")
 
 checkpoint further_compress:
     input: os.path.join(kneadfolder, "{sample}.fastq")
     output: os.path.join(kneadfolder, "{sample}.fastq.gz")
+    wildcard_constraints:
+         sample ='[^(paired)][0-9a-zA-Z]*'
     run: shell("gzip {input} > {output}")
 
 rule metaphlan_cat:
