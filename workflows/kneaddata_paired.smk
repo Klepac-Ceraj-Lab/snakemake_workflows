@@ -42,15 +42,18 @@ checkpoint furthercompress:
     run: 
         shell("gzip -c {input} > {output}")
 
-def aggregate_furthercompress(wildcards):
-    checkpoint_output = checkpoints.furthercompress.get(**wildcards).output[0]   
+def aggregate_input(wildcards):
+    with checkpoints.furthercompress.get(sample = wildcards.sample).output[0].open() as f:
+        if f.read().strip() == "{sample}.fastq":
+            return "{kneadfolder}/{sample}.fastq.gz"
 
-rule finished:
-    input: aggregate_furthercompress
-    output: "finished.txt"
-    shell:'''
-    touch {output}
-    '''
+rule aggregate:
+    input:
+        aggregate_input
+    output:
+        "aggregated/{sample}.fastq.gz"
+    shell:
+        "touch {output}"
 
 rule metaphlan_cat:
     input:
