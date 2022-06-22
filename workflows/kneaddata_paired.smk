@@ -36,12 +36,12 @@ rule compressdata2:
     run: 
         shell("gzip -c {input} > {output}")
 
-checkpoint further_compress:
-    input: "{kneadfolder}/{sample}.fastq"
-    output: "{kneadfolder}/{sample}.fastq.gz"
-    wildcard_constraints:
-         sample ='[^(paired)][0-9a-zA-Z]*'
-    run: shell("gzip {input} > {output}")
+checkpoint furthercompress:
+    input: "{kneadfolder}/{sample}*.fastq"
+    output: "{kneadfolder}/{sample}*.fastq.gz"
+    run: 
+        shell("gzip -c {input} > {output}")
+
 
 rule metaphlan_cat:
     input:
