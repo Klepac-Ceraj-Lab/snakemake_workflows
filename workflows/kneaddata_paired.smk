@@ -20,13 +20,18 @@ rule kneaddata:
     run:
         shell("kneaddata --input {{input.fwd}} --input {{input.rev}} --reference-db /hg37 --output {} --output-prefix {{wildcards.sample}}_kneaddata --trimmomatic /opt/conda/share/trimmomatic".format(kneadfolder))
 
+checkpoint further_compress:
+    input: "{kneadfolder}/{sample}*.fastq"
+    output: "{kneadfolder}/{sample}*.fastq.gz"
+    run: shell("gzip {input} > {output}")
+    
 rule compressdata1:
     input: 
         fwd= os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq"),
     output:
         rev= os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq.gz")
     run: 
-        shell("gzip -c {input} > {output}")
+        shell("gzip {input} > {output}")
 
 rule compressdata2:
     input: 
@@ -34,9 +39,7 @@ rule compressdata2:
     output:
         rev= os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq.gz")
     run: 
-        shell("gzip -c {input} > {output}")
-
-checkpoint further_compress
+        shell("gzip {input} > {output}")
 
 rule metaphlan_cat:
     input:
@@ -45,7 +48,6 @@ rule metaphlan_cat:
     output: temp(os.path.join(kneadfolder, "{sample}_kneaddata.fastq"))
     run:
         shell("cat {input} > {output}")
-
 
 rule kneaddata_counts:
     input: expand(os.path.join(kneadfolder, "{sample}_kneaddata.log"), sample = samples)
