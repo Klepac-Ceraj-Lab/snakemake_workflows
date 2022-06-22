@@ -42,6 +42,15 @@ checkpoint furthercompress:
     run: 
         shell("gzip -c {input} > {output}")
 
+def aggregate_furthercompress(wildcards):
+    checkpoint_output = checkpoints.furthercompress.get(**wildcards).output[0]   
+
+rule finished:
+    input: aggregate_furthercompress
+    output: "finished.txt"
+    shell:'''
+    touch {output}
+    '''
 
 rule metaphlan_cat:
     input:
