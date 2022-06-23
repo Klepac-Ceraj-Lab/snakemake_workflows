@@ -40,9 +40,9 @@ checkpoint furthercompress:
     input: "{kneadfolder}/{sample}*.fastq"
     output: "{kneadfolder}/{sample}*.fastq.gz"
     run: 
-        shell("ls {kneadfolder}/{sample}*.fastq | xargs -n1 gzip")
+        shell("gzip -c {input} > {output}")
 
-# def aggregate_input(wildcards):
+#def aggregate_input(wildcards):
     # with checkpoints.furthercompress.get(sample = wildcards.sample).output[0].open() as f:
     #   if f.read().strip() == "{sample}.fastq":
         # return "{kneadfolder}/{sample}.fastq.gz"
