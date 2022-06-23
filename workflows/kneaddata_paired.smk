@@ -40,20 +40,18 @@ checkpoint furthercompress:
     input: "{kneadfolder}/{sample}*.fastq"
     output: "{kneadfolder}/{sample}*.fastq.gz"
     run: 
-        shell("gzip -c {input} > {output}")
+        shell("ls {kneadfolder}/{sample}*.fastq | xargs -n1 gzip")
 
-def aggregate_input(wildcards):
-    with checkpoints.furthercompress.get(sample = wildcards.sample).output[0].open() as f:
-        if f.read().strip() == "{sample}.fastq":
-            return "{kneadfolder}/{sample}.fastq.gz"
+# def aggregate_input(wildcards):
+    # with checkpoints.furthercompress.get(sample = wildcards.sample).output[0].open() as f:
+    #   if f.read().strip() == "{sample}.fastq":
+        # return "{kneadfolder}/{sample}.fastq.gz"
 
-rule aggregate:
-    input:
-        aggregate_input
-    output:
-        "aggregated/{sample}.fastq.gz"
-    shell:
-        "touch {output}"
+# rule aggregate:
+#    input: aggregate_input
+    # output: "aggregated/{sample}.fastq.gz"
+    # run:
+    # shell("touch {output}")
 
 rule metaphlan_cat:
     input:
