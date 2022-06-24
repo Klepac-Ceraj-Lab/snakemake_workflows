@@ -36,22 +36,26 @@ rule compressdata2:
     run: 
         shell("gzip -c {input} > {output}")
 
-checkpoint furthercompress:
-    input: "{kneadfolder}/{sample}*.fastq"
-    output: "{kneadfolder}/{sample}*.fastq.gz"
-    run: 
+IDs, = glob_wildcards("kneadfolder/{id}.fastq")
+
+rule all1:
+    input:
+        expand("kneadfolder/{id}.fastq.gz",
+            id = IDs)
+
+rule further_compress:
+    input:
+        'kneadfolder/{id}.fastq'
+    output:
+        'kneadfolder/{id}.fastq.gz'
+    run:
         shell("gzip -c {input} > {output}")
 
-#def aggregate_input(wildcards):
-    # with checkpoints.furthercompress.get(sample = wildcards.sample).output[0].open() as f:
-    #   if f.read().strip() == "{sample}.fastq":
-        # return "{kneadfolder}/{sample}.fastq.gz"
 
-# rule aggregate:
-#    input: aggregate_input
-    # output: "aggregated/{sample}.fastq.gz"
-    # run:
-    # shell("touch {output}")
+#checkpoint further_compress:
+	#input: '{sample}_{suffix}.fastq'
+	#output: '{sample}_{suffix}.fastq.gz'
+	#shell: ("gzip {input}")
 
 rule metaphlan_cat:
     input:
