@@ -53,6 +53,7 @@ rule compressdata2:
  
 ####trying with glob
 IDs, = glob_wildcards("kneadfolder/{id}.fastq")
+print("these are the IDS", IDs)
 
 rule all1:
    input:
