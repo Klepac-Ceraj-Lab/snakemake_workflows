@@ -52,9 +52,11 @@ rule compressdata2:
 
  
 ####trying with glob
-IDs, = glob_wildcards("kneadfolder/{id}.fastq")
-print("these are the IDS", IDs)
+#IDs, = glob_wildcards("kneadfolder/{id}.fastq")
+#print("these are the IDS", IDs)
 
+IDs= (os.path.join(kneadfolder, '{id}.fastq'))
+print("these are the ids", IDs)
 rule all1:
    input:
     expand("kneadfolder/{id}.fastq.gz",
