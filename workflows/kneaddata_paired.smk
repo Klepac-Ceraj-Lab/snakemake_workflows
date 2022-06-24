@@ -36,23 +36,51 @@ rule compressdata2:
     run: 
         shell("gzip -c {input} > {output}")
 
-IDs, = glob_wildcards("kneadfolder/{id}.fastq")
+####trying for loop
 
-rule all1:
-    input:
-        expand("kneadfolder/{id}.fastq.gz",
-            id = IDs)
+directory = os.fsencode("kneadfolder")
 
-rule further_compress:
-    input:
-        'kneadfolder/{id}.fastq'
-    output:
-        'kneadfolder/{id}.fastq.gz'
-    run:
-        shell("gzip -c {input} > {output}")
+IDs = []
+for file in os.listdir(directory):
+     filename = os.fsdecode(file)
+     if filename.endswith(".fastq"):
+        IDs.append(filename)
+
+for id in IDs:
+    rule further_compress:
+	    input: '{id}'
+	    output: '{id}.gz'
+	    run: shell("gzip -c {input} > {output}")
+
+    
 
 
-#checkpoint further_compress:
+        
+        
+
+
+
+
+
+
+####trying with glob
+#IDs, = glob_wildcards("kneadfolder/{id}.fastq")
+
+#rule all1:
+   # input:
+     #   expand("kneadfolder/{id}.fastq.gz",
+     #       id = IDs)
+
+#rule further_compress:
+   # input:
+  #      'kneadfolder/{id}.fastq'
+ #   output:
+  #      'kneadfolder/{id}.fastq.gz'
+  #  run:
+  #      shell("gzip -c {input} > {output}")
+
+
+#rule further_compress:
 	#input: '{sample}_{suffix}.fastq'
 	#output: '{sample}_{suffix}.fastq.gz'
 	#shell: ("gzip {input}")
