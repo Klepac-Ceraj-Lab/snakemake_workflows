@@ -55,17 +55,19 @@ rule compressdata2:
 #IDs, = glob_wildcards("kneadfolder/{id}.fastq")
 #print("these are the IDS", IDs)
 
-IDs= glob_wildcards(os.path.join(kneadfolder, "{sample}_{id}.fastq"))
-print("these are the ids", IDs)
+checkpoint all_:
+   output:
+    expand("kneadfolder/{sample}.fastq.gz",
+    sample = samples)
 
-rule all1:
-   input:
-    expand("kneadfolder/{id}.fastq.gz",
-    id = IDs)
+def aggregate_input(wildcards):
+    samples = glob_wildcards("kneadfolder/{sample}.fastq")
+    checkpoints.all_.get(sample=wildcards.sample)
+    return ("kneadfolder/{sample}.fastq")
 
-checkpoint further_compress:
-   input: ("kneadfolder/{id}.fastq")
-   output: ("kneadfolder/{id}.fastq.gz")
+rule further_compress:
+   input: aggregate_input
+   output: ("kneadfolder/{sample}.fastq.gz")
    run: shell("cp {input} {output}")
 
 
