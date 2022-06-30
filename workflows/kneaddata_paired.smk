@@ -36,18 +36,14 @@ rule kneaddata:
     #run: 
         #shell("gzip -c {input} > {output}")
 
-####trying with glob
-
+####trying with glob+checkpoint
 checkpoint check_kneadfolder:
     output: kneadfolder #re-evalutes workflow so that kneadfolder exists
 
-
 def aggregate_input(wildcards):
     output__folder = checkpoints.check_kneadfolder.get().output #gets kneadfolder from checkpoint
-    IDs = glob_wildcards(os.path.join(output__folder, "{id}.fastq")), #glob_wildcards looks into directory and grabs text in front of .fastq
-    print("these are ids", IDs)
+    IDs = glob_wildcards(os.path.join(output__folder, "{id}.fastq")) #glob_wildcards looks into directory and grabs text in front of .fastq
     return os.path.join(output__folder, "{id}.fastq")
-
 
 rule further_compress:
     input: aggregate_input #calls aggregate input with both glob and checkpoint to make sure DAG is re-evaluated for this rule
