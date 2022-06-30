@@ -9,7 +9,7 @@ rule kneaddata_cat_pair2:
     run:
         shell("cat {input} > {output}")
 
-rule kneaddata:
+checkpoint kneaddata:
     input:
         fwd = os.path.join(input_folder, "{sample}_1.fastq.gz"),
         rev = os.path.join(input_folder, "{sample}_2.fastq.gz"),
@@ -36,19 +36,26 @@ rule kneaddata:
     #run: 
         #shell("gzip -c {input} > {output}")
 
-####trying with glob+checkpoint
-checkpoint check_kneadfolder:
-    output: kneadfolder #re-evalutes workflow so that kneadfolder exists
+# ####trying with glob+checkpoint
+# checkpoint check_kneadfolder:
+#     output: kneadfolder #re-evalutes workflow so that kneadfolder exists
 
 def aggregate_input(wildcards):
-    output__folder = checkpoints.check_kneadfolder.get().output #gets kneadfolder from checkpoint
-    IDs = glob_wildcards(os.path.join(output__folder, "{id}.fastq")) #glob_wildcards looks into directory and grabs text in front of .fastq
-    return os.path.join(output__folder, "{id}.fastq")
+      checkpoint_output = checkpoints.kneaddata.get(**wildcards).sample
+      (lose, suffices) = glob_wildcards(os.path.join(kneadfolder, "{sample}_{suffix}.fastq"))
+      suffices = list(set(suffices))
+      return expand(os.path.join(kneadfolder, "{sample}_{suffix}.fastq"),
+                    sample = checkpoint_output, suffix=suffices)
 
-rule further_compress:
-    input: aggregate_input #calls aggregate input with both glob and checkpoint to make sure DAG is re-evaluated for this rule
-    output: os.path.join(kneadfolder, "{id}.fastq.gz")
-    run: shell("gzip -c {input} > {output}")
+
+rule kneadgzip:
+    input:
+        aggregate_input
+    output:
+        expand(os.path.join(kneadfolder, "{sample}_{suffix}.fastq.gz"), sample=checkpoints.kneaddata.get(**wildcards).sample, suffix=suffices)
+    shell:
+        "gzip --keep {input}"
+
 
 
 rule metaphlan_cat:
