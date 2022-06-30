@@ -36,35 +36,21 @@ rule compressdata2:
     run: 
         shell("gzip -c {input} > {output}")
 
-rule all_:
-    input:
-        "kneadfolder/a.fastq.gz"
+####trying with glob
 
-checkpoint further_compress:
-    input: 
-        "kneadfolder/{sample}.fastq"
-    output:
-        "further_compress/{sample}.fastq"
-    run:
-        shell("echo {input} > {output}")
+checkpoint check_kneadfolder:
+    output: kneadfolder #re-evalutes workflow so that kneadfolder exists
 
-rule compress_more:
-    input: 
-        "further_compress/{sample}.fastq"
-    output:
-        "further_compress/{sample}.fastq.gz"
 
 def aggregate_input(wildcards):
-    with checkpoints.further_compress.get(sample=wildcards.sample).output[0].open() as f:
-        return "further_compress/{sample}.fastq.gz"
+    output__folder = checkpoints.check_kneadfolder.get.output() #gets kneadfolder from checkpoint
+    IDs = glob_wildcards(os.path.join(output__folder, "{id}.fastq")) #glob_wildcards looks into directory and grabs text in front of .fastq
+    return os.path.join(output__folder, "{id}.fastq")
 
-rule aggregate:
-    input:
-        aggregate_input
-    output:
-        "aggregated/{sample}.fastq"
-    run:
-        shell("touch {output}")
+rule further_compress:
+    input: aggregate_input #calls aggregate input with both glob and checkpoint to make sure DAG is re-evaluated for this rule
+    output: os.path.join(kneadfolder, "{id}.fastq.gz")
+    run: shell("gzip -c {input} > {output}")
 
 
 rule metaphlan_cat:
