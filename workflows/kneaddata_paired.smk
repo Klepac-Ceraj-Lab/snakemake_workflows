@@ -20,21 +20,21 @@ rule kneaddata:
     run:
         shell("kneaddata --input {{input.fwd}} --input {{input.rev}} --reference-db /hg37 --output {} --output-prefix {{wildcards.sample}}_kneaddata --trimmomatic /opt/conda/share/trimmomatic".format(kneadfolder))
     
-rule compressdata1:
-    input: 
-        fwd= os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq"),
-    output:
-        rev= os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq.gz")
-    run: 
-        shell("gzip -c {input} > {output}")
+#rule compressdata1:
+    #input: 
+        #fwd= os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq"),
+    #output:
+        #rev= os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq.gz")
+    #run: 
+        #shell("gzip -c {input} > {output}")
 
-rule compressdata2:
-    input: 
-        fwd= os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq"),
-    output:
-        rev= os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq.gz")
-    run: 
-        shell("gzip -c {input} > {output}")
+#rule compressdata2:
+    #input: 
+        #fwd= os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq"),
+    #output:
+        #rev= os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq.gz")
+    #run: 
+        #shell("gzip -c {input} > {output}")
 
 ####trying with glob
 
@@ -43,9 +43,11 @@ checkpoint check_kneadfolder:
 
 
 def aggregate_input(wildcards):
-    output__folder = checkpoints.check_kneadfolder.get.output() #gets kneadfolder from checkpoint
-    IDs = glob_wildcards(os.path.join(output__folder, "{id}.fastq")) #glob_wildcards looks into directory and grabs text in front of .fastq
+    output__folder = checkpoints.check_kneadfolder.get().output #gets kneadfolder from checkpoint
+    IDs = glob_wildcards(os.path.join(output__folder, "{id}.fastq")), #glob_wildcards looks into directory and grabs text in front of .fastq
+    print("these are ids", IDs)
     return os.path.join(output__folder, "{id}.fastq")
+
 
 rule further_compress:
     input: aggregate_input #calls aggregate input with both glob and checkpoint to make sure DAG is re-evaluated for this rule
