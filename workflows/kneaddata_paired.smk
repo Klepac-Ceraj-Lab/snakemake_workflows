@@ -36,45 +36,36 @@ rule compressdata2:
     run: 
         shell("gzip -c {input} > {output}")
 
-####trying for loop
-#checkpoint further_compress:
-#        directory = os.fsencode(kneadfolder)
-#        IDs = []
-#    for file in os.listdir(directory):
-#        filename = os.fsdecode(file)
-#        if filename.endswith(".fastq"):
-#            IDs.append(filename)
+rule all_:
+    input:
+        "kneadfolder/a.fastq.gz"
 
-#    for id in IDs:
-#	    input: '{id}'
-#	    output: '{id}.gz'
-#	    run: shell("gzip -c {input} > {output}")
+checkpoint further_compress:
+    input: 
+        "kneadfolder/{sample}.fastq"
+    output:
+        "further_compress/{sample}.fastq"
+    run:
+        shell("echo {input} > {output}")
 
- 
-####trying with glob
-#IDs, = glob_wildcards("kneadfolder/{id}.fastq")
-#print("these are the IDS", IDs)
-
-checkpoint all_:
-   output:
-    expand("kneadfolder/{sample}.fastq.gz",
-    sample = samples)
+rule compress_more:
+    input: 
+        "further_compress/{sample}.fastq"
+    output:
+        "further_compress/{sample}.fastq.gz"
 
 def aggregate_input(wildcards):
-    samples = glob_wildcards("kneadfolder/{sample}.fastq")
-    checkpoints.all_.get(sample=wildcards.sample)
-    return ("kneadfolder/{sample}.fastq")
+    with checkpoints.further_compress.get(sample=wildcards.sample).output[0].open() as f:
+        return "further_compress/{sample}.fastq.gz"
 
-rule further_compress:
-   input: aggregate_input
-   output: ("kneadfolder/{sample}.fastq.gz")
-   run: shell("cp {input} {output}")
+rule aggregate:
+    input:
+        aggregate_input
+    output:
+        "aggregated/{sample}.fastq"
+    run:
+        shell("touch {output}")
 
-
-#rule further_compress:
-	#input: '{sample}_{suffix}.fastq'
-	#output: '{sample}_{suffix}.fastq.gz'
-	#shell: ("gzip {input}")
 
 rule metaphlan_cat:
     input:
