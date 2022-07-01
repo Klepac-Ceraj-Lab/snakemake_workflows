@@ -20,41 +20,41 @@ checkpoint kneaddata:
     run:
         shell("kneaddata --input {{input.fwd}} --input {{input.rev}} --reference-db /hg37 --output {} --output-prefix {{wildcards.sample}}_kneaddata --trimmomatic /opt/conda/share/trimmomatic".format(kneadfolder))
     
-#rule compressdata1:
-    #input: 
-        #fwd= os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq"),
-    #output:
-        #rev= os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq.gz")
-    #run: 
-        #shell("gzip -c {input} > {output}")
+rule compressdata1:
+    input: 
+        fwd= os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq"),
+    output:
+        rev= os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq.gz")
+    run: 
+        shell("gzip -c {input} > {output}")
 
-#rule compressdata2:
-    #input: 
-        #fwd= os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq"),
-    #output:
-        #rev= os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq.gz")
-    #run: 
-        #shell("gzip -c {input} > {output}")
+rule compressdata2:
+    input: 
+        fwd= os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq"),
+    output:
+        rev= os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq.gz")
+    run: 
+        shell("gzip -c {input} > {output}")
 
 # ####trying with glob+checkpoint
 # checkpoint check_kneadfolder:
 #     output: kneadfolder #re-evalutes workflow so that kneadfolder exists
 
-def aggregate_input(wildcards):
-      checkpoint_output = checkpoints.kneaddata.get(**wildcards).sample
-      (lose, suffices) = glob_wildcards(os.path.join(kneadfolder, "{sample}_{suffix}.fastq"))
-      suffices = list(set(suffices))
-      return expand(os.path.join(kneadfolder, "{sample}_{suffix}.fastq"),
-                    sample = checkpoint_output, suffix=suffices)
 
+def kneadzip_input(wildcards):
+    checkpoint_output = checkpoints.kneaddata.get(**wildcards).output[0]
+    suffices, = glob_wildcards(os.path.join(checkpoint_output, "{suffix}.fastq"))
+    #suffices = list(set(suffices))
+    return expand(os.path.join(checkpoint_output, "{suffix}.fastq"),
+            suffix=suffices)
 
 rule kneadgzip:
     input:
-        aggregate_input
+        kneadzip_input
     output:
-        expand(os.path.join(kneadfolder, "{sample}_{suffix}.fastq.gz"), sample=checkpoints.kneaddata.get(**wildcards).sample, suffix=suffices)
+        expand(os.path.join(kneadfolder, "{suffix}.fastq.gz"), suffix=glob_wildcards(os.path.join(kneadfolder, "{suffix}.fastq")))
     shell:
-        "gzip --keep {input}"
+        "cat {input} > {output}"
 
 
 
