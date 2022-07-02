@@ -9,7 +9,7 @@ rule kneaddata_cat_pair2:
     run:
         shell("cat {input} > {output}")
 
-rule kneaddata:
+checkpoint kneaddata:
     input:
         fwd = os.path.join(input_folder, "{sample}_1.fastq.gz"),
         rev = os.path.join(input_folder, "{sample}_2.fastq.gz"),
@@ -40,11 +40,10 @@ rule compressdata2:
 # checkpoint check_kneadfolder:
 #     output: kneadfolder #re-evalutes workflow so that kneadfolder exists
 
-checkpoint compress_data:
-    output: kneadfolder
+
 
 def kneadzip_input(wildcards):
-    checkpoint_output = checkpoints.compress_data.get(**wildcards).output[0]
+    checkpoint_output = checkpoints.kneaddata.get(**wildcards).output[0]
     suffices, = glob_wildcards(os.path.join(checkpoint_output, "{suffix}.fastq"))
     #suffices = list(set(suffices))
     return expand(os.path.join(checkpoint_output, "{suffix}.fastq"),
