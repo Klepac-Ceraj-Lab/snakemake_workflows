@@ -9,7 +9,7 @@ rule kneaddata_cat_pair2:
     run:
         shell("cat {input} > {output}")
 
-checkpoint kneaddata:
+rule kneaddata:
     input:
         fwd = os.path.join(input_folder, "{sample}_1.fastq.gz"),
         rev = os.path.join(input_folder, "{sample}_2.fastq.gz"),
@@ -34,30 +34,34 @@ rule compressdata2:
     output:
         rev= os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq.gz")
     run: 
-        shell("gzip -c {input} > {output}")
+        shell("gzip -c {input} > {output.rev}")
 
 # ####trying with glob+checkpoint
 # checkpoint check_kneadfolder:
 #     output: kneadfolder #re-evalutes workflow so that kneadfolder exists
+rule final_ouput:
+   input: os.path.join(kneadfolder, "all.fastq.gz")
 
-
+checkpoint zipper:
+    output:
+       folder = kneadfolder
+    shell:
+        touch(os.path.join("{output.folder}/{sample}_kneaddata_paired_2.fastq.gz"))
 
 def kneadzip_input(wildcards):
-    checkpoint_output = checkpoints.kneaddata.get(**wildcards).output[0]
-    suffices, = glob_wildcards(os.path.join(checkpoint_output, "{suffix}.fastq"))
+    checkpoint_output = checkpoints.zipper.get(**wildcards).output.folder
+    samples, suffices = glob_wildcards(os.path.join(checkpoint_output, "{sample}_{suffix}.fastq"))
     #suffices = list(set(suffices))
-    return expand(os.path.join(checkpoint_output, "{suffix}.fastq"),
-            suffix=suffices)
+    return expand(os.path.join(checkpoint_output, "{sample}_{suffix}.fastq"),
+            sample = samples, suffix=suffices)
 
 rule kneadgzip:
     input:
         kneadzip_input
     output:
-        expand(os.path.join(kneadfolder, "{suffix}.fastq.gz"), suffix=glob_wildcards(os.path.join(kneadfolder, "{suffix}.fastq")))
-    shell:
-        "cat {input} > {output}"
-
-
+       combined = os.path.join(kneadfolder, "all.fastq.gz")
+    run:
+        shell("cat {input} > {output.combined}")
 
 rule metaphlan_cat:
     input:
