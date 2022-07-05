@@ -9,7 +9,7 @@ rule kneaddata_cat_pair2:
     run:
         shell("cat {input} > {output}")
 
-rule kneaddata:
+checkpoint kneaddata:
     input:
         fwd = os.path.join(input_folder, "{sample}_1.fastq.gz"),
         rev = os.path.join(input_folder, "{sample}_2.fastq.gz"),
@@ -19,7 +19,7 @@ rule kneaddata:
         log = os.path.join(kneadfolder, "{sample}_kneaddata.log")
     run:
         shell("kneaddata --input {{input.fwd}} --input {{input.rev}} --reference-db /hg37 --output {} --output-prefix {{wildcards.sample}}_kneaddata --trimmomatic /opt/conda/share/trimmomatic".format(kneadfolder))
-
+    
 rule compressdata1:
     input: 
         fwd= os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq"),
@@ -34,17 +34,33 @@ rule compressdata2:
     output:
         rev= os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq.gz")
     run: 
-        shell("gzip -c {input} > {output}")
+        shell("gzip -c {input} > {output.rev}")
 
+def kneadzip_input(wildcards):
+    sample = checkpoints.kneaddata.get(**wildcards).sample
+    lose, suffices = glob_wildcards(os.path.join(kneadfolder, "{{sample}}_{suffix}.fastq"))
+    #suffices = list(set(suffices))
+    return expand(os.path.join(kneadfolder, "{{sample}}_{suffix}.fastq"), suffix=suffices)
+
+rule kneadgzip:
+    input:
+        fwd = os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq.gz"),
+        rev = os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq.gz")
+    output:
+        temp(os.path.join(kneadfolder, "{sample}_complete.txt"))
+    shell:
+        """
+        gzip -f {}/{{wildcards.sample}}*.fastq
+        touch {}/{{wildcards.sample}}_complete.txt
+        """.format(kneadfolder, kneadfolder)
 
 rule metaphlan_cat:
     input:
         fwd = os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq"),
-        rev = os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq"),
+        rev = os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq")
     output: temp(os.path.join(kneadfolder, "{sample}_kneaddata.fastq"))
     run:
         shell("cat {input} > {output}")
-
 
 rule kneaddata_counts:
     input: expand(os.path.join(kneadfolder, "{sample}_kneaddata.log"), sample = samples)
@@ -56,7 +72,8 @@ rule kneaddata_report:
     input:
         counts = os.path.join(kneadfolder, "kneaddata_read_counts.tsv"),
         fwd = expand(os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq.gz"), sample = samples),
-        rev = expand(os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq.gz"), sample = samples)
+        rev = expand(os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq.gz"), sample = samples),
+        zipped = expand(os.path.join(kneadfolder, "{sample}_complete.txt"), sample = samples)
     output:
         os.path.join(kneadfolder, "kneaddata_report.html")
     run:
