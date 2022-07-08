@@ -18,7 +18,7 @@ rule kneaddata:
         rev = temp(os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq")),
         log = os.path.join(kneadfolder, "{sample}_kneaddata.log")
     run:
-        shell("kneaddata --cluster-config cluster.yaml -cluster 'qsub -pe threaded {cluster.processors}' --input {{input.fwd}} --input {{input.rev}} --reference-db /hg37 --output {} --output-prefix {{wildcards.sample}}_kneaddata --trimmomatic /opt/conda/share/trimmomatic".format(kneadfolder))
+        shell("kneaddata qsub -t {cluster.processors} --input {{input.fwd}} --input {{input.rev}} --reference-db /hg37 --output {} --output-prefix {{wildcards.sample}}_kneaddata --trimmomatic /opt/conda/share/trimmomatic".format(kneadfolder))
 
 rule compressdata1:
     input: 
