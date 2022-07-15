@@ -17,10 +17,11 @@ rule kneaddata:
         fwd = temp(os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq")),
         rev = temp(os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq")),
         log = os.path.join(kneadfolder, "{sample}_kneaddata.log")
-    resources: 
-    run: 
+    run: if processors in cluster.processors():
         shell("kneaddata --input {{input.fwd}} --input {{input.rev}} --reference-db /hg37 --output {} --output-prefix {{wildcards.sample}}_kneaddata --trimmomatic /opt/conda/share/trimmomatic".format(kneadfolder))
-    
+    else:
+        processors= default.processors
+        
 rule compressdata1:
     input: 
         fwd= os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq"),
