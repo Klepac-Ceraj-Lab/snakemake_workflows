@@ -19,6 +19,7 @@ rule kneaddata:
         log = os.path.join(kneadfolder, "{sample}_kneaddata.log")
     run: 
         if os.path.exists(cluster.yaml):
+            processors= {cluster.yaml(kneaddata)[processors]}
             shell("kneaddata --input {{input.fwd}} --input {{input.rev}} --reference-db /hg37 --output {} --output-prefix {{wildcards.sample}}_kneaddata --trimmomatic /opt/conda/share/trimmomatic".format(kneadfolder))
         else: processors= 1
 
