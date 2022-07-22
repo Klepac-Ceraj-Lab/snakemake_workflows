@@ -31,3 +31,8 @@ databases:
     uniref: /pool001/vklepacc/databases/humann/uniref/
     utility_mapping: /pool001/vklepacc/databases/humann/utility_mapping
     bowtie2db: /pool001/vklepacc/databases/metaphlan
+
+rule_resources:
+    kneaddata:
+        threads: 8
+        memory: 8000
