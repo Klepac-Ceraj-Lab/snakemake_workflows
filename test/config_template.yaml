@@ -1,0 +1,38 @@
+################################################
+# Template for bioabakery snakemake workflows. #
+################################################
+
+#-------------------
+# workflow variables
+#-------------------
+---
+input_folder: "rawfastq"
+output_folder: "output"
+reads: paired # change to "single" if appropriate
+run: all # or: "kneaddata" "metaphlan" "humann"
+samples: setup/echo_samples.smk
+
+#----------------------
+# Environment variables
+#----------------------
+
+# # by default, assume these are in $PATH
+# # These are not yet used
+# executables:
+#     kneaddata: kneaddata
+#     metaphlan: metaphlan
+#     humann: humann
+#     diamond: diamond
+
+# these are the paths on your cluster
+databases:
+    human_sequences: /pool001/vklepacc/databases/kneaddata
+    chocophlan: /pool001/vklepacc/databases/humann/chocophlan
+    uniref: /pool001/vklepacc/databases/humann/uniref/
+    utility_mapping: /pool001/vklepacc/databases/humann/utility_mapping
+    bowtie2db: /pool001/vklepacc/databases/metaphlan
+
+rule_resources:
+    kneaddata:
+        threads: 8
+        memory: 8000
