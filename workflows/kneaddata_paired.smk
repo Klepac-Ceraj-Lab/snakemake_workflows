@@ -19,9 +19,10 @@ rule kneaddata:
         log = os.path.join(kneadfolder, "{sample}_kneaddata.log")
      resources:
         threads= config["rule_resources"]["kneaddata"]["threads"]
-        memory= config["rule_resources"]["kneaddata"]["threads"]
+        memory= config["rule_resources"]["kneaddata"]["memory"]
+        time= config["rule_resources"]["kneaddata"]["time"]
     run: 
-        shell("kneaddata --threads {resources.threads} --memory {resources.memory} --input {{input.fwd}} --input {{input.rev}} --reference-db /hg37 --output {} --output-prefix {{wildcards.sample}}_kneaddata --trimmomatic /opt/conda/share/trimmomatic".format(kneadfolder))
+        shell("kneaddata --threads {resources.threads} --memory {resources.memory} --time {resources.time} --input {{input.fwd}} --input {{input.rev}} --reference-db /hg37 --output {} --output-prefix {{wildcards.sample}}_kneaddata --trimmomatic /opt/conda/share/trimmomatic".format(kneadfolder))
 
 
 rule compressdata1:
