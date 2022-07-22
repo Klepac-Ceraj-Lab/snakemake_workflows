@@ -32,7 +32,20 @@ databases:
     utility_mapping: /pool001/vklepacc/databases/humann/utility_mapping
     bowtie2db: /pool001/vklepacc/databases/metaphlan
 
+#----------------------
+# Rule resources
+#----------------------
 rule_resources:
     kneaddata:
         threads: 8
         memory: 8000
+    
+    kneaddata_gzip:
+        threads: 1
+    
+    metaphlan:
+        threads: 8
+
+    humann:
+        threads: 16
+        memory: 24000 # 24 Gb
