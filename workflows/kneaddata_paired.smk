@@ -17,7 +17,7 @@ rule kneaddata:
         fwd = temp(os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq")),
         rev = temp(os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq")),
         log = os.path.join(kneadfolder, "{sample}_kneaddata.log")
-     resources:
+    resources:
         threads= config["rule_resources"]["kneaddata"]["threads"]
     run: 
         shell("kneaddata --threads {resources.threads} --input {{input.fwd}} --input {{input.rev}} --reference-db /hg37 --output {} --output-prefix {{wildcards.sample}}_kneaddata --trimmomatic /opt/conda/share/trimmomatic".format(kneadfolder))
