@@ -23,7 +23,6 @@ rule kneaddata:
     resources:
         threads= get_knead_threads 
     run: 
-        print(config.keys())
         shell("kneaddata --threads {resources.threads} --input {{input.fwd}} --input {{input.rev}} --reference-db /hg37 --output {} --output-prefix {{wildcards.sample}}_kneaddata --trimmomatic /opt/conda/share/trimmomatic".format(kneadfolder))
 
 
