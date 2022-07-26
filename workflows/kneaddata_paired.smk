@@ -9,6 +9,9 @@ rule kneaddata_cat_pair2:
     run:
         shell("cat {input} > {output}")
 
+def get_knead_threads():
+    config["rule_resources"]["kneaddata"]["threads"]
+
 rule kneaddata:
     input:
         fwd = os.path.join(input_folder, "{sample}_1.fastq.gz"),
@@ -18,8 +21,9 @@ rule kneaddata:
         rev = temp(os.path.join(kneadfolder, "{sample}_kneaddata_paired_2.fastq")),
         log = os.path.join(kneadfolder, "{sample}_kneaddata.log")
     resources:
-        threads= config["rule_resources"]["kneaddata"]["threads"]
+        threads= get_knead_threads 
     run: 
+        print(config.keys())
         shell("kneaddata --threads {resources.threads} --input {{input.fwd}} --input {{input.rev}} --reference-db /hg37 --output {} --output-prefix {{wildcards.sample}}_kneaddata --trimmomatic /opt/conda/share/trimmomatic".format(kneadfolder))
 
 
@@ -39,7 +43,6 @@ rule compressdata2:
     run: 
         shell("gzip -c {input} > {output}")
 
-
 rule metaphlan_cat:
     input:
         fwd = os.path.join(kneadfolder, "{sample}_kneaddata_paired_1.fastq"),
@@ -47,7 +50,6 @@ rule metaphlan_cat:
     output: temp(os.path.join(kneadfolder, "{sample}_kneaddata.fastq"))
     run:
         shell("cat {input} > {output}")
-
 
 rule kneaddata_counts:
     input: expand(os.path.join(kneadfolder, "{sample}_kneaddata.log"), sample = samples)
