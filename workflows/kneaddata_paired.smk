@@ -9,8 +9,8 @@ rule kneaddata_cat_pair2:
     run:
         shell("cat {input} > {output}")
 
-def get_knead_threads():
-    config["rule_resources"]["kneaddata"]["threads"]
+def get_knead_threads(wildcards):
+    return config["rule_resources"]["kneaddata"]["threads"]
 
 rule kneaddata:
     input:

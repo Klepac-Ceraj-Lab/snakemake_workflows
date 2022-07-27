@@ -1,7 +1,7 @@
 metaphlanfolder = os.path.join(output_folder, "metaphlan")
 
-def get_metaphlan_threads():
-    config["rule_resources"]["metaphlan"]["threads"]
+def get_metaphlan_threads(wildcards):
+    return config["rule_resources"]["metaphlan"]["threads"]
 
 rule metaphlan:
     input: os.path.join(kneadfolder, "{sample}_kneaddata.fastq")
@@ -10,7 +10,7 @@ rule metaphlan:
         bowtie = os.path.join(metaphlanfolder, "{sample}_bowtie2.tsv"),
         sam = temp(os.path.join(metaphlanfolder, "{sample}.sam"))
     resources:
-        threads= get_metaphlan_threads 
+        threads = get_metaphlan_threads 
     run:
         shell("metaphlan {input} {output.profile} --threads {resources.threads} --bowtie2out {output.bowtie} --samout {output.sam} --input_type fastq --nproc 8") # TODO: get nproc from cluster config
 
