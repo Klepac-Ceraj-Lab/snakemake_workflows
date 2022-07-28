@@ -36,6 +36,12 @@ databases:
 # Rule resources
 #----------------------
 rule_resources:
+    default:
+        threads: 1 # for -n arg
+        nodes: 1 # for -N arg, makes sure all processors are on same node
+        time: "0-00:15" # for -t, 15 min
+        memory: 8000 # --mem, 8 Gb
+
     kneaddata:
         threads: 8
         memory: 8000
@@ -53,9 +59,3 @@ rule_resources:
         threads: 16
         memory: 24000 # 24 Gb
         time: "0-12:00" # 12 hours
-
-    __default__:
-        threads: 1 # for -n arg
-        nodes: 1 # for -N arg, makes sure all processors are on same node
-        time: "0-00:15" # for -t, 15 min
-        memory: 8000 # --mem, 8 Gb
