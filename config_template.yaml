@@ -31,3 +31,31 @@ databases:
     uniref: /pool001/vklepacc/databases/humann/uniref/
     utility_mapping: /pool001/vklepacc/databases/humann/utility_mapping
     bowtie2db: /pool001/vklepacc/databases/metaphlan
+
+#----------------------
+# Rule resources
+#----------------------
+rule_resources:
+    default:
+        threads: 1 # for -n arg
+        nodes: 1 # for -N arg, makes sure all processors are on same node
+        time: "0-00:15" # for -t, 15 min
+        memory: 8000 # --mem, 8 Gb
+
+    kneaddata:
+        threads: 8
+        memory: 8000
+        time: "0-08:00" # 8 hours
+    
+    kneaddata_gzip:
+        threads: 1
+        time: "0-01:00" # 1 hour
+    
+    metaphlan:
+        threads: 8
+        time: "0-04:00" # 4 hours
+
+    humann:
+        threads: 16
+        memory: 24000 # 24 Gb
+        time: "0-12:00" # 12 hours
