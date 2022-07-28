@@ -3,8 +3,8 @@ humannfolder = os.path.join(output_folder, "humann")
 ##############
 # Per Sample #
 ##############
-def get_humann_threads():
-    config["rule_resources"]["kneaddata"]["threads"]
+def get_humann_threads(wildcards):
+    return config["rule_resources"]["kneaddata"]["threads"]
 
 rule humann:
     input:
